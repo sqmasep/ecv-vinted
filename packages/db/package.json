@@ -21,6 +21,7 @@
     "typescript": "5.9.2"
   },
   "dependencies": {
+    "@repo/schemas": "*",
     "drizzle-orm": "^0.45.2"
   }
 }

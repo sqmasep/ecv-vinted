@@ -1,42 +1,20 @@
 import { relations, sql } from "drizzle-orm";
 import { sqliteTable, text, integer, index } from "drizzle-orm/sqlite-core";
+// Enum vocabulary lives in @repo/schemas (single source of truth shared with
+// the API and the front). Money is stored as integer cents to avoid float drift.
+import {
+  STATES,
+  ESCROW_STATUSES,
+  INSPECTION_STATUSES,
+  INSPECTION_DECISIONS,
+  ROLES,
+} from "@repo/schemas";
 
-// ---------------------------------------------------------------------------
-// Shared enums — the state machine the front consumes (read-only).
-// Money is stored as integer cents to avoid float drift; divide by 100 to show.
-// ---------------------------------------------------------------------------
-
-// Article / order lifecycle, mapped to the tracking timeline (spec 2.2).
-export const STATES = [
-  "listed", // on sale, purchasable
-  "sold_awaiting_shipment", // paid, funds in escrow
-  "received_at_hub", // received at the authentication hub
-  "authentication_in_progress", // experts working on it
-  "lab_analysis", // neutral sub-state of the authentication step
-  "authenticated", // terminal +
-  "shipped", // terminal +
-  "delivered", // terminal +, escrow released
-  "rejected", // terminal -, refund
-] as const;
-export type State = (typeof STATES)[number];
-
-// Order escrow status.
-export const ESCROW_STATUSES = ["held", "released", "refunded"] as const;
-export type EscrowStatus = (typeof ESCROW_STATUSES)[number];
-
-// Inspection (authentication) cycle — owned by the back brick.
-export const INSPECTION_STATUSES = [
-  "pending",
-  "in_progress",
-  "completed",
-] as const;
-export type InspectionStatus = (typeof INSPECTION_STATUSES)[number];
-
-export const INSPECTION_DECISIONS = ["authenticated", "rejected"] as const;
-export type InspectionDecision = (typeof INSPECTION_DECISIONS)[number];
-
-export const ROLES = ["buyer", "seller", "expert", "admin"] as const;
-export type Role = (typeof ROLES)[number];
+export type {
+  State,
+  EscrowStatus,
+  Role,
+} from "@repo/schemas";
 
 // ---------------------------------------------------------------------------
 // Auth tables (better-auth) — do not rename columns; adapter relies on them.

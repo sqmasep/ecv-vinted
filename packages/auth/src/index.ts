@@ -13,6 +13,9 @@ const trustedOrigins = (
   .filter(Boolean);
 
 export const auth = betterAuth({
+  // Origin of the auth server (apps/api). Without it better-auth derives the
+  // origin from the request, which breaks callbacks/redirects.
+  baseURL: process.env.BETTER_AUTH_URL ?? "http://localhost:3001",
   database: drizzleAdapter(db, {
     provider: "sqlite",
   }),

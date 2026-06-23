@@ -1,17 +1,27 @@
 {
   "name": "api",
   "version": "1.0.50",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "bun run --watch src/index.ts"
+    "dev": "bun run --watch src/index.ts",
+    "db:seed": "bun run src/seed.ts",
+    "check-types": "tsc --noEmit"
   },
   "dependencies": {
     "@elysiajs/cors": "^1.4.2",
     "@repo/auth": "*",
+    "@repo/db": "*",
+    "@repo/schemas": "*",
+    "drizzle-orm": "^0.45.2",
     "elysia": "latest"
   },
   "devDependencies": {
-    "bun-types": "latest"
-  },
-  "module": "src/index.js"
+    "@repo/typescript-config": "*",
+    "bun-types": "latest",
+    "typescript": "5.9.2"
+  }
 }
