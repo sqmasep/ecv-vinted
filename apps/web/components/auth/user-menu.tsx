@@ -45,14 +45,19 @@ export function UserMenu() {
   }
 
   return (
-    <div className="flex items-center gap-3">
-      <span className="text-sm">
-        <span className="text-muted-foreground">Hi, </span>
+    <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+      <span className="hidden max-w-40 truncate text-sm sm:inline-block">
+        <span className="text-muted-foreground">Bonjour, </span>
         {data.user.name || data.user.email}
       </span>
-      <Button variant="outline" size="sm" onClick={handleSignOut}>
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={handleSignOut}
+        aria-label="Se déconnecter"
+      >
         <LogOut className="size-4" />
-        Sign out
+        <span className="hidden sm:inline">Déconnexion</span>
       </Button>
     </div>
   );

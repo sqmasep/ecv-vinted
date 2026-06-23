@@ -13,7 +13,7 @@ export function CartIndicator() {
     <Button asChild variant="ghost" size="sm" className="relative">
       <Link href="/panier" aria-label={`Panier, ${count} article(s)`}>
         <ShoppingBag className="size-4" />
-        Panier
+        <span className="hidden sm:inline">Panier</span>
         {ready && count > 0 && (
           <span className="ml-1 inline-flex min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold text-primary-foreground">
             {count}
