@@ -32,7 +32,7 @@ export default async function ArticlePage({
 
       <div className="grid gap-8 lg:grid-cols-2 lg:items-start">
         {/* Gallery */}
-        <div className="relative flex aspect-square items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-neutral-100 to-neutral-200 ring-1 ring-foreground/10 dark:from-neutral-800 dark:to-neutral-900">
+        <div className="relative flex aspect-square items-center justify-center overflow-hidden rounded-xl bg-linear-to-br from-neutral-100 to-neutral-200 ring-1 ring-foreground/10 dark:from-neutral-800 dark:to-neutral-900">
           <span className="font-heading text-7xl font-semibold tracking-tight text-foreground/15">
             {article.brand.slice(0, 2).toUpperCase()}
           </span>

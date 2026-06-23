@@ -14,7 +14,7 @@ export default function ShopLayout({
   return (
     <CartProvider>
       <div className="flex min-h-svh flex-col">
-        <div className="flex items-center justify-center gap-2 bg-primary px-4 py-1.5 text-center text-xs text-primary-foreground">
+        <div className="flex items-center justify-center gap-2 bg-vinted px-4 py-1.5 text-center text-xs text-vinted-foreground">
           <ShieldCheck className="size-3.5" />
           Toutes les pièces sont authentifiées par nos experts
         </div>

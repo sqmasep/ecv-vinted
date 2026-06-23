@@ -32,7 +32,7 @@ export function CartView() {
             key={item.articleId}
             className="flex items-center gap-4 rounded-xl bg-card p-3 ring-1 ring-foreground/10"
           >
-            <div className="flex size-16 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-neutral-100 to-neutral-200 font-heading text-lg font-semibold text-foreground/20 dark:from-neutral-800 dark:to-neutral-900">
+            <div className="flex size-16 shrink-0 items-center justify-center rounded-lg bg-linear-to-br from-neutral-100 to-neutral-200 font-heading text-lg font-semibold text-foreground/20 dark:from-neutral-800 dark:to-neutral-900">
               {item.brand.slice(0, 2).toUpperCase()}
             </div>
             <div className="min-w-0 flex-1">
@@ -82,7 +82,7 @@ export function CartView() {
           l’authentification.
         </p>
 
-        <Button asChild size="lg" className="mt-4 w-full">
+        <Button asChild size="lg" variant="vinted" className="mt-4 w-full">
           <Link href="/paiement">
             Procéder au paiement
             <ArrowRight />

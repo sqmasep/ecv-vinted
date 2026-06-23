@@ -186,7 +186,13 @@ export function PaymentForm() {
           </p>
         </div>
 
-        <Button type="submit" size="lg" className="mt-4 w-full" disabled={loading}>
+        <Button
+          type="submit"
+          size="lg"
+          variant="vinted"
+          className="mt-4 w-full"
+          disabled={loading}
+        >
           {loading && <Loader2 className="size-4 animate-spin" />}
           Payer et lancer l’authentification
         </Button>

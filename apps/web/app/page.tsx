@@ -27,7 +27,7 @@ export default function Home() {
           Chaque pièce est authentifiée par nos experts. Paiement sous séquestre,
           suivi en temps réel de l’achat à la livraison.
         </p>
-        <Button asChild size="lg" className="mt-2">
+        <Button asChild size="lg" variant="vinted" className="mt-2">
           <Link href="/articles">
             Découvrir la boutique
             <ArrowRight />
