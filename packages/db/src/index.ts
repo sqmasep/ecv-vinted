@@ -1,9 +1,16 @@
+import { fileURLToPath } from "node:url";
 import type { BunSQLiteDatabase } from "drizzle-orm/bun-sqlite";
 import * as schema from "./schema.js";
 
 export { schema };
 
 type DB = BunSQLiteDatabase<typeof schema>;
+
+// Resolve the db file relative to THIS package (packages/db), not the cwd of
+// whatever process imports it. The API runs with cwd=apps/api, drizzle-kit with
+// cwd=packages/db; a relative "local.db" therefore opens two different files —
+// push fills one, the API reads an empty one with no `user` table.
+const defaultDbPath = fileURLToPath(new URL("../local.db", import.meta.url));
 
 let _db: DB | undefined;
 
@@ -15,7 +22,7 @@ function getDb(): DB {
   if (!_db) {
     const { drizzle } = require("drizzle-orm/bun-sqlite");
     const { Database } = require("bun:sqlite");
-    const sqlite = new Database(process.env.DATABASE_URL ?? "local.db");
+    const sqlite = new Database(process.env.DATABASE_URL ?? defaultDbPath);
     _db = drizzle({ client: sqlite, schema });
   }
   return _db as DB;
