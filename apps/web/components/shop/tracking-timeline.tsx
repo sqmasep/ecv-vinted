@@ -155,7 +155,9 @@ export function TrackingTimeline({
                     {done ? (
                       <Check className="size-4" />
                     ) : active ? (
-                      <Loader2 className="size-4 animate-spin" />
+                      // Static "current step" marker — not a spinner, so it
+                      // never reads as "the page is loading something".
+                      <span className="block size-2.5 rounded-full bg-amber-500" />
                     ) : (
                       <Clock className="size-4" />
                     )}

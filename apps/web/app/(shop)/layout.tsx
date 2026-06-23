@@ -3,6 +3,7 @@ import { ShieldCheck } from "lucide-react";
 
 import { CartProvider } from "@/components/shop/cart-provider";
 import { CartIndicator } from "@/components/shop/cart-indicator";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { UserMenu } from "@/components/auth/user-menu";
 
 export default function ShopLayout({
@@ -33,6 +34,7 @@ export default function ShopLayout({
               </nav>
             </div>
             <div className="flex items-center gap-2">
+              <ThemeToggle />
               <CartIndicator />
               <UserMenu />
             </div>

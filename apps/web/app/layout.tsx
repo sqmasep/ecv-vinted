@@ -1,24 +1,21 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
-import { Geist } from "next/font/google";
+import { Inter, Cormorant_Garamond } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/components/theme-provider";
 import { cn } from "@/lib/utils";
 import "./globals.css";
 
-const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
-
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
+// Body — clean grotesque. Headings — Cormorant Garamond serif for the luxe feel.
+const sans = Inter({ subsets: ["latin"], variable: "--font-sans" });
+const heading = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-heading",
 });
 
 export const metadata: Metadata = {
-  title: "Web",
-  description: "Web app with Better Auth",
+  title: "ÉCRIN by Vinted",
+  description: "Seconde main de luxe authentifiée",
 };
 
 export default function RootLayout({
@@ -27,16 +24,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("font-sans", geist.variable)}>
-      <body
-        className={cn(
-          geistSans.variable,
-          geistMono.variable,
-          "bg-background text-foreground antialiased",
-        )}
-      >
-        {children}
-        <Toaster richColors />
+    <html
+      lang="fr"
+      suppressHydrationWarning
+      className={cn("font-sans", sans.variable, heading.variable)}
+    >
+      <body className="bg-background text-foreground antialiased">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem={false}
+          disableTransitionOnChange
+        >
+          {children}
+          <Toaster richColors />
+        </ThemeProvider>
       </body>
     </html>
   );
