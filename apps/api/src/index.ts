@@ -24,7 +24,14 @@ import {
 } from "./domain/expertise/routes.js";
 
 const PORT = process.env.PORT || 3001;
-const WEB_ORIGIN = process.env.WEB_ORIGIN || "http://localhost:3000";
+// Browser origins allowed to call the API with credentials (cookie auth).
+// Front-acheteur (3000) + back-office (3002); override via CORS_ORIGINS.
+const WEB_ORIGINS = (
+  process.env.CORS_ORIGINS ?? "http://localhost:3000,http://localhost:3002"
+)
+  .split(",")
+  .map((o) => o.trim())
+  .filter(Boolean);
 
 // --- mappers: Drizzle rows -> JSON-friendly contract (epoch ms, see schemas) -
 
@@ -90,7 +97,7 @@ const expertiseRoutes = createExpertiseRoutes({
 const app = new Elysia()
   .use(
     cors({
-      origin: WEB_ORIGIN,
+      origin: WEB_ORIGINS,
       credentials: true,
       allowedHeaders: ["Content-Type", "Authorization"],
     }),
