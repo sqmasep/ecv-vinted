@@ -128,6 +128,7 @@ async function main() {
   const sellerId = await ensureUser("vendeur@ecrin.test", "Vendeur ÉCRIN", "seller");
   const buyerId = await ensureUser("alexandre@ecrin.test", "Alexandre", "buyer");
   await ensureUser("expert@ecrin.test", "Expert ÉCRIN", "expert");
+  await ensureUser("admin@ecrin.test", "Admin ÉCRIN", "admin");
 
   // Clear domain data (respect FK order) for a repeatable seed.
   await db.delete(statusEvent);
@@ -146,6 +147,8 @@ async function main() {
   console.log("✅ seed done");
   console.log("   buyer login:  alexandre@ecrin.test /", PASSWORD);
   console.log("   seller login: vendeur@ecrin.test /", PASSWORD);
+  console.log("   expert login: expert@ecrin.test /", PASSWORD);
+  console.log("   admin login:  admin@ecrin.test /", PASSWORD);
 }
 
 main().then(() => process.exit(0));

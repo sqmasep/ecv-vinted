@@ -29,6 +29,11 @@ export const INSPECTION_STATUSES = [
 
 export const INSPECTION_DECISIONS = ["authenticated", "rejected"] as const;
 
+// Origin of a status-machine event — who/what triggered the transition.
+// `operateur` = expert/admin via back-office, `webhook` = external lab feed,
+// `systeme` = automatic effect.
+export const EVENT_SOURCES = ["operateur", "webhook", "systeme"] as const;
+
 export const ROLES = ["buyer", "seller", "expert", "admin"] as const;
 
 // ---------------------------------------------------------------------------
@@ -43,6 +48,9 @@ export type EscrowStatus = z.infer<typeof escrowStatusSchema>;
 
 export const roleSchema = z.enum(ROLES);
 export type Role = z.infer<typeof roleSchema>;
+
+export const eventSourceSchema = z.enum(EVENT_SOURCES);
+export type EventSource = z.infer<typeof eventSourceSchema>;
 
 // ---------------------------------------------------------------------------
 // Entity schemas (API output) — timestamps are epoch ms numbers; the API maps
@@ -142,3 +150,99 @@ export const advanceOrderSchema = z.object({
   reject: z.boolean().optional(),
 });
 export type AdvanceOrderInput = z.infer<typeof advanceOrderSchema>;
+
+// ===========================================================================
+// Back brick — expertise / authentication (single source of truth shared by
+// the API and the future back-office).
+// ===========================================================================
+
+// Lifecycle states the back brick pilots, expressed in the canonical STATES
+// vocabulary (`recue_hub` → `authentifie`/`refuse`). It is the subset of STATES
+// the expertise domain reads/writes; `listed`/`delivered` stay tunnel-only.
+export const EXPERTISE_STATES = [
+  "sold_awaiting_shipment", // vendue
+  "received_at_hub", // recue_hub
+  "authentication_in_progress", // expertise_en_cours
+  "lab_analysis", // analyse_labo
+  "authenticated", // authentifie
+  "rejected", // refuse
+  "shipped", // expedie (handed back to the tunnel)
+] as const;
+
+export const statutExpertiseSchema = z.enum(EXPERTISE_STATES);
+export type StatutExpertise = z.infer<typeof statutExpertiseSchema>;
+
+// Final decision of an expertise. Reuses INSPECTION_DECISIONS so the API input,
+// the `inspection.decision` column and the DTO never drift.
+export const decisionSchema = z.enum(INSPECTION_DECISIONS);
+export type Decision = z.infer<typeof decisionSchema>;
+
+// Result classification of a lab report.
+export const LAB_RESULTS = ["conforme", "non_conforme", "non_concluant"] as const;
+export const resultatLaboSchema = z.enum(LAB_RESULTS);
+export type ResultatLabo = z.infer<typeof resultatLaboSchema>;
+
+// --- Route input payloads (étape 5) ---------------------------------------
+
+// POST /expertise/:articleId/reception — article scanned in at the hub.
+export const receptionInputSchema = z.object({
+  hubId: z.string().min(1),
+});
+export type ReceptionInput = z.infer<typeof receptionInputSchema>;
+
+// POST /expertise/:id/start — assign an expert and begin the expertise.
+export const startInputSchema = z.object({
+  expertId: z.string().min(1),
+});
+export type StartInput = z.infer<typeof startInputSchema>;
+
+// POST /expertise/:id/rapport — attach a lab report.
+export const rapportInputSchema = z.object({
+  laboratoire: z.string().min(1),
+  resultat: resultatLaboSchema,
+  urlDocument: z.string().url(),
+});
+export type RapportInput = z.infer<typeof rapportInputSchema>;
+
+// POST /expertise/:id/decision — close the expertise. `motif` is mandatory and
+// non-empty when refusing (state-machine guard for REFUSER).
+export const decisionInputSchema = z
+  .object({
+    decision: decisionSchema,
+    motif: z.string().min(1).optional(),
+  })
+  .superRefine((val, ctx) => {
+    if (val.decision === "rejected" && !val.motif) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["motif"],
+        message: "motif is required when decision is 'rejected'",
+      });
+    }
+  });
+export type DecisionInput = z.infer<typeof decisionInputSchema>;
+
+// --- Output DTOs -----------------------------------------------------------
+
+// Expertise (inspection) projection. Timestamps are epoch ms (API contract).
+export const expertiseDTO = z.object({
+  id: z.string(),
+  articleId: z.string(),
+  inspectorId: z.string().nullable(),
+  status: z.enum(INSPECTION_STATUSES),
+  decision: decisionSchema.nullable(),
+  rejectionReason: z.string().nullable(),
+  createdAt: z.number().int(),
+  updatedAt: z.number().int(),
+});
+export type ExpertiseDTO = z.infer<typeof expertiseDTO>;
+
+// Status-event journal row (audit trail). Extends the buyer-timeline shape with
+// the back-brick audit fields (actor, source, message body, idempotency key).
+export const evenementStatutDTO = statusEventSchema.extend({
+  actorId: z.string().nullable(),
+  source: eventSourceSchema,
+  notificationMessage: z.string().nullable(),
+  eventKey: z.string().nullable(),
+});
+export type EvenementStatutDTO = z.infer<typeof evenementStatutDTO>;

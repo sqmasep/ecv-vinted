@@ -1,8 +1,7 @@
 import { Elysia } from "elysia";
 import { cors } from "@elysiajs/cors";
-import { and, asc, eq, gte, like, lte, desc } from "drizzle-orm";
 import { auth } from "@repo/auth";
-import { db } from "@repo/db";
+import { and, asc, db, desc, eq, gte, like, lte } from "@repo/db";
 import { article, order, statusEvent } from "@repo/db/schema";
 import {
   advanceOrderSchema,
@@ -11,11 +10,12 @@ import {
   type State,
 } from "@repo/schemas";
 import {
-  NEXT_STATE,
-  REJECTABLE_STATES,
-  SILENT_STATES,
-  TERMINAL_STATES,
-} from "./state-machine.js";
+  transition,
+  FORWARD_EVENT,
+  effectsNotify,
+  type ExpertiseEvent,
+  type TransitionPayload,
+} from "./domain/expertise/state-machine.js";
 
 const PORT = process.env.PORT || 3001;
 const WEB_ORIGIN = process.env.WEB_ORIGIN || "http://localhost:3000";
@@ -154,7 +154,8 @@ const app = new Elysia()
         .select()
         .from(order)
         .where(eq(order.id, orderId));
-      return toOrder(created!);
+      if (!created) return status(500, { error: "order_creation_failed" });
+      return toOrder(created);
     },
     { body: createOrderSchema },
   )
@@ -220,18 +221,25 @@ const app = new Elysia()
         return status(403, { error: "forbidden" });
 
       const cur = row.article.currentState as State;
-      if (TERMINAL_STATES.includes(cur))
-        return status(409, { error: "already_terminal" });
 
-      let next: State | undefined;
+      // Route the demo walk through the SAME state machine the back brick uses
+      // (no status written outside transition()). Synthetic payloads stand in
+      // for the operator inputs this dev endpoint does not collect.
+      let event: ExpertiseEvent;
+      let payload: TransitionPayload = {};
       if (body.reject) {
-        if (!REJECTABLE_STATES.includes(cur))
-          return status(409, { error: "not_rejectable_here" });
-        next = "rejected";
+        event = "REFUSER";
+        payload = { motif: "Refus (démo)" };
       } else {
-        next = NEXT_STATE[cur];
+        const forward = FORWARD_EVENT[cur];
+        if (!forward) return status(409, { error: "no_next_state" });
+        event = forward;
+        payload = { hubId: "hub-demo", expertId: user.id };
       }
-      if (!next) return status(409, { error: "no_next_state" });
+
+      const result = transition(cur, event, payload);
+      if (!result.ok) return status(409, { error: "transition_forbidden" });
+      const next = result.etatCible;
 
       await db.insert(statusEvent).values({
         id: crypto.randomUUID(),
@@ -239,20 +247,23 @@ const app = new Elysia()
         orderId: row.order.id,
         previousState: cur,
         newState: next,
-        notificationSent: !SILENT_STATES.includes(next),
+        actorId: user.id,
+        source: "operateur",
+        notificationSent: effectsNotify(result.effets),
       });
       await db
         .update(article)
         .set({ currentState: next })
         .where(eq(article.id, row.article.id));
 
-      // Settle escrow at the terminal states.
-      if (next === "delivered")
+      // Settle escrow from the machine's effects (release on delivery, refund
+      // on refusal) — never inferred from the state name directly.
+      if (result.effets.some((e) => e.type === "RELEASE_ESCROW"))
         await db
           .update(order)
           .set({ status: "released" })
           .where(eq(order.id, row.order.id));
-      if (next === "rejected")
+      if (result.effets.some((e) => e.type === "REFUND"))
         await db
           .update(order)
           .set({ status: "refunded" })
@@ -263,7 +274,11 @@ const app = new Elysia()
         .from(order)
         .innerJoin(article, eq(order.articleId, article.id))
         .where(eq(order.id, params.id));
-      return { ...toOrder(updated!.order), article: toArticle(updated!.article) };
+      if (!updated) return status(500, { error: "order_update_failed" });
+      return {
+        ...toOrder(updated.order),
+        article: toArticle(updated.article),
+      };
     },
     { body: advanceOrderSchema },
   )
