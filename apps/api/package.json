@@ -6,9 +6,9 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "test": "vitest run && bun test ./src/domain/expertise/expertise-service.itest.ts",
+    "test": "vitest run && bun test ./src/domain/expertise/*.itest.ts",
     "test:unit": "vitest run",
-    "test:integration": "bun test ./src/domain/expertise/expertise-service.itest.ts",
+    "test:integration": "bun test ./src/domain/expertise/*.itest.ts",
     "dev": "bun run --watch src/index.ts",
     "db:seed": "bun run src/seed.ts",
     "check-types": "tsc --noEmit"

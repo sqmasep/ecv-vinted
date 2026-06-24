@@ -16,6 +16,12 @@ import {
   type ExpertiseEvent,
   type TransitionPayload,
 } from "./domain/expertise/state-machine.js";
+import { ExpertiseService } from "./domain/expertise/expertise-service.js";
+import { ConsoleNotifier } from "./domain/expertise/notifier.js";
+import {
+  createExpertiseRoutes,
+  type AuthUser,
+} from "./domain/expertise/routes.js";
 
 const PORT = process.env.PORT || 3001;
 const WEB_ORIGIN = process.env.WEB_ORIGIN || "http://localhost:3000";
@@ -64,6 +70,22 @@ async function currentUser(request: Request) {
   const session = await auth.api.getSession({ headers: request.headers });
   return session?.user ?? null;
 }
+
+// Back brick (expertise) wiring: real service (db + console notifier) and a
+// session reader narrowed to { id, role } for the route guards.
+const expertiseService = new ExpertiseService(db, new ConsoleNotifier());
+
+async function expertiseUser(request: Request): Promise<AuthUser | null> {
+  const user = await currentUser(request);
+  // role is an optional better-auth additionalField; default to the safest role.
+  return user ? { id: user.id, role: user.role ?? "buyer" } : null;
+}
+
+const expertiseRoutes = createExpertiseRoutes({
+  service: expertiseService,
+  getUser: expertiseUser,
+  db,
+});
 
 const app = new Elysia()
   .use(
@@ -282,6 +304,9 @@ const app = new Elysia()
     },
     { body: advanceOrderSchema },
   )
+
+  // --- Back brick: expertise / authentication routes ----------------------
+  .use(expertiseRoutes)
   .listen(PORT);
 
 console.log(
