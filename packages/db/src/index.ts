@@ -23,6 +23,9 @@ function getDb(): DB {
     const { drizzle } = require("drizzle-orm/bun-sqlite");
     const { Database } = require("bun:sqlite");
     const sqlite = new Database(process.env.DATABASE_URL ?? defaultDbPath);
+    // Wait instead of erroring if another process (e.g. the API during an e2e
+    // seed) briefly holds the write lock.
+    sqlite.exec("PRAGMA busy_timeout = 5000;");
     _db = drizzle({ client: sqlite, schema });
   }
   return _db as DB;

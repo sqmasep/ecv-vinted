@@ -19,7 +19,15 @@ export function ThemeToggle() {
     <Button
       variant="ghost"
       size="icon-sm"
-      aria-label={isDark ? "Passer en mode clair" : "Passer en mode sombre"}
+      // Stable label until mounted — the theme is unknown on the server, so a
+      // theme-dependent label would cause a hydration mismatch.
+      aria-label={
+        !mounted
+          ? "Changer de thème"
+          : isDark
+            ? "Passer en mode clair"
+            : "Passer en mode sombre"
+      }
       onClick={() => setTheme(isDark ? "light" : "dark")}
     >
       {mounted && isDark ? (
