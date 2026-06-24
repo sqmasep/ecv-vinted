@@ -6,7 +6,7 @@ export { schema };
 
 // Re-export query helpers so consumers share the same drizzle-orm instance as
 // the schema columns — avoids duplicate-package type errors in the monorepo.
-export { and, asc, desc, eq, gte, like, lte } from "drizzle-orm";
+export { and, asc, desc, eq, gte, inArray, like, lte, or } from "drizzle-orm";
 
 type DB = BunSQLiteDatabase<typeof schema>;
 

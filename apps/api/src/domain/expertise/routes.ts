@@ -14,16 +14,28 @@
 // ===========================================================================
 
 import { Elysia } from "elysia";
-import { asc, eq } from "@repo/db";
-import { article, inspection, statusEvent } from "@repo/db/schema";
+import { and, asc, eq, inArray, like, or } from "@repo/db";
+import {
+  article,
+  inspection,
+  statusEvent,
+  labReport,
+  user as userTable,
+} from "@repo/db/schema";
 import {
   receptionInputSchema,
   startInputSchema,
   rapportInputSchema,
   decisionInputSchema,
+  expertiseListFiltersSchema,
+  EXPERTISE_STATES,
   type Role,
   type ExpertiseDTO,
   type EvenementStatutDTO,
+  type LabReportDTO,
+  type ExpertiseListItem,
+  type ExpertiseDetail,
+  type ExpertSummary,
 } from "@repo/schemas";
 import {
   ExpertiseService,
@@ -52,6 +64,32 @@ function hasRole(user: AuthUser, roles: readonly Role[]): boolean {
 
 type InspectionRow = typeof inspection.$inferSelect;
 type StatusEventRow = typeof statusEvent.$inferSelect;
+type ArticleRow = typeof article.$inferSelect;
+type LabReportRow = typeof labReport.$inferSelect;
+
+const toArticleDTO = (r: ArticleRow) => ({
+  id: r.id,
+  sellerId: r.sellerId,
+  title: r.title,
+  brand: r.brand,
+  price: r.price,
+  authenticationFee: r.authenticationFee,
+  currentState: r.currentState,
+  createdAt: r.createdAt.getTime(),
+  updatedAt: r.updatedAt.getTime(),
+});
+
+// `result`/`document_url` are plain text/nullable columns; the input route
+// validates `resultat` against LAB_RESULTS so stored values stay in the enum.
+const toLabReportDTO = (r: LabReportRow): LabReportDTO => ({
+  id: r.id,
+  inspectionId: r.inspectionId,
+  laboratoire: r.laboratory,
+  resultat: r.result as LabReportDTO["resultat"],
+  urlDocument: r.documentUrl,
+  createdAt: r.createdAt.getTime(),
+  updatedAt: r.updatedAt.getTime(),
+});
 
 const toExpertiseDTO = (r: InspectionRow): ExpertiseDTO => ({
   id: r.id,
@@ -215,6 +253,133 @@ export function createExpertiseRoutes(deps: ExpertiseRouteDeps) {
         },
         { body: decisionInputSchema },
       )
+
+      // GET /expertise — list of dossiers (wireframe 1). expert | admin.
+      // `statut` narrows to one state; otherwise every EXPERTISE_STATES dossier
+      // is returned. `stateSince` (article.updatedAt) drives the "ancienneté
+      // dans l'état" column — the article row is only touched on a transition,
+      // so its updatedAt is the time it entered its current state.
+      .get(
+        "/expertise",
+        async ({ query, request, status }) => {
+          const user = await getUser(request);
+          if (!user) return status(401, { error: "unauthorized" });
+          if (!hasRole(user, ACTION_ROLES))
+            return status(403, { error: "forbidden" });
+
+          const conditions = [
+            query.statut
+              ? eq(article.currentState, query.statut)
+              : inArray(article.currentState, [...EXPERTISE_STATES]),
+          ];
+          if (query.q) {
+            const needle = `%${query.q}%`;
+            conditions.push(
+              or(like(article.brand, needle), like(article.title, needle))!,
+            );
+          }
+
+          const rows = db
+            .select({
+              articleId: article.id,
+              title: article.title,
+              brand: article.brand,
+              price: article.price,
+              currentState: article.currentState,
+              updatedAt: article.updatedAt,
+              inspectorId: inspection.inspectorId,
+              inspectionStatus: inspection.status,
+              inspectorName: userTable.name,
+            })
+            .from(article)
+            .leftJoin(inspection, eq(inspection.articleId, article.id))
+            .leftJoin(userTable, eq(userTable.id, inspection.inspectorId))
+            .where(and(...conditions))
+            // Oldest in state first: the longest-waiting dossiers float up.
+            .orderBy(asc(article.updatedAt))
+            .all();
+
+          const items: ExpertiseListItem[] = rows.map((r) => ({
+            articleId: r.articleId,
+            title: r.title,
+            brand: r.brand,
+            price: r.price,
+            currentState: r.currentState,
+            inspectorId: r.inspectorId,
+            inspectorName: r.inspectorName ?? null,
+            inspectionStatus: r.inspectionStatus ?? null,
+            stateSince: r.updatedAt.getTime(),
+          }));
+          return items;
+        },
+        { query: expertiseListFiltersSchema },
+      )
+
+      // GET /expertise/:id — aggregated dossier detail (wireframe 2). expert |
+      // admin. `:id` is the ARTICLE id (shared segment name, Elysia constraint).
+      .get("/expertise/:id", async ({ params, request, status }) => {
+        const user = await getUser(request);
+        if (!user) return status(401, { error: "unauthorized" });
+        if (!hasRole(user, ACTION_ROLES))
+          return status(403, { error: "forbidden" });
+
+        const art = db
+          .select()
+          .from(article)
+          .where(eq(article.id, params.id))
+          .get();
+        if (!art) return status(404, { error: "article_not_found" });
+
+        const insp = db
+          .select()
+          .from(inspection)
+          .where(eq(inspection.articleId, params.id))
+          .get();
+
+        let inspectorName: string | null = null;
+        let rapports: LabReportDTO[] = [];
+        if (insp) {
+          if (insp.inspectorId) {
+            const u = db
+              .select({ name: userTable.name })
+              .from(userTable)
+              .where(eq(userTable.id, insp.inspectorId))
+              .get();
+            inspectorName = u?.name ?? null;
+          }
+          rapports = db
+            .select()
+            .from(labReport)
+            .where(eq(labReport.inspectionId, insp.id))
+            .orderBy(asc(labReport.createdAt))
+            .all()
+            .map(toLabReportDTO);
+        }
+
+        const detail: ExpertiseDetail = {
+          article: toArticleDTO(art),
+          expertise: insp ? toExpertiseDTO(insp) : null,
+          inspectorName,
+          rapports,
+        };
+        return detail;
+      })
+
+      // GET /experts — expert identities for the "assign expert" selector.
+      .get("/experts", async ({ request, status }) => {
+        const user = await getUser(request);
+        if (!user) return status(401, { error: "unauthorized" });
+        if (!hasRole(user, ACTION_ROLES))
+          return status(403, { error: "forbidden" });
+
+        const experts: ExpertSummary[] = db
+          .select({ id: userTable.id, name: userTable.name })
+          .from(userTable)
+          .where(eq(userTable.role, "expert"))
+          .orderBy(asc(userTable.name))
+          .all();
+        return experts;
+      })
 
       // GET /articles/:id/historique — read-only status-event journal (admin)
       .get("/articles/:id/historique", async ({ params, request, status }) => {

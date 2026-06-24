@@ -164,6 +164,110 @@ describe("error mapping", () => {
   });
 });
 
+// --- read endpoints (liste / détail / experts) -----------------------------
+
+describe("GET /expertise (dossier list)", () => {
+  it("lists expertise dossiers for an expert (oldest in state first)", async () => {
+    const r = await get(`/expertise`);
+    expect(r.status).toBe(200);
+    const rows = await r.json();
+    const row = rows.find(
+      (x: { articleId: string }) => x.articleId === fx.articleId,
+    );
+    expect(row).toBeDefined();
+    expect(row.brand).toBe("Hermès");
+    // No expert assigned until /start.
+    expect(row.inspectorId).toBeNull();
+    expect(row.inspectorName).toBeNull();
+  });
+
+  it("exposes the assigned expert name once the expertise started", async () => {
+    await post(`/expertise/${fx.articleId}/reception`, { hubId: "hub-1" });
+    const id = inspectionId();
+    await post(`/expertise/${id}/start`, { expertId: fx.expertId });
+
+    const r = await get(`/expertise`);
+    const row = (await r.json()).find(
+      (x: { articleId: string }) => x.articleId === fx.articleId,
+    );
+    expect(row.inspectorId).toBe(fx.expertId);
+    expect(row.inspectorName).toBe("Expert");
+    expect(row.currentState).toBe("authentication_in_progress");
+  });
+
+  it("filters by statut", async () => {
+    const empty = await get(`/expertise?statut=authenticated`);
+    expect((await empty.json()).length).toBe(0);
+    const sold = await get(`/expertise?statut=sold_awaiting_shipment`);
+    expect((await sold.json()).length).toBe(1);
+  });
+
+  it("filters by free-text q on brand/title", async () => {
+    expect((await (await get(`/expertise?q=Hermès`)).json()).length).toBe(1);
+    expect((await (await get(`/expertise?q=Chanel`)).json()).length).toBe(0);
+  });
+
+  it("403 for a buyer, 401 without session", async () => {
+    currentUser = BUYER;
+    expect((await get(`/expertise`)).status).toBe(403);
+    currentUser = null;
+    expect((await get(`/expertise`)).status).toBe(401);
+  });
+});
+
+describe("GET /expertise/:id (dossier detail)", () => {
+  it("404 for an unknown article", async () => {
+    expect((await get(`/expertise/nope`)).status).toBe(404);
+  });
+
+  it("returns the article with a null expertise before reception", async () => {
+    const r = await get(`/expertise/${fx.articleId}`);
+    expect(r.status).toBe(200);
+    const b = await r.json();
+    expect(b.article.id).toBe(fx.articleId);
+    expect(b.expertise).toBeNull();
+    expect(b.rapports).toEqual([]);
+  });
+
+  it("aggregates inspection, expert name and lab reports", async () => {
+    await post(`/expertise/${fx.articleId}/reception`, { hubId: "hub-1" });
+    const id = inspectionId();
+    await post(`/expertise/${id}/start`, { expertId: fx.expertId });
+    await post(`/expertise/${id}/rapport`, {
+      laboratoire: "Lab Paris",
+      resultat: "conforme",
+      urlDocument: "https://x.test/r.pdf",
+    });
+
+    const r = await get(`/expertise/${fx.articleId}`);
+    const b = await r.json();
+    expect(b.expertise.status).toBe("in_progress");
+    expect(b.inspectorName).toBe("Expert");
+    expect(b.rapports.length).toBe(1);
+    expect(b.rapports[0].laboratoire).toBe("Lab Paris");
+    expect(b.rapports[0].resultat).toBe("conforme");
+  });
+
+  it("403 for a buyer", async () => {
+    currentUser = BUYER;
+    expect((await get(`/expertise/${fx.articleId}`)).status).toBe(403);
+  });
+});
+
+describe("GET /experts", () => {
+  it("returns the expert identities for the selector", async () => {
+    const r = await get(`/experts`);
+    expect(r.status).toBe(200);
+    const experts = await r.json();
+    expect(experts).toEqual([{ id: fx.expertId, name: "Expert" }]);
+  });
+
+  it("403 for a buyer", async () => {
+    currentUser = BUYER;
+    expect((await get(`/experts`)).status).toBe(403);
+  });
+});
+
 // --- history (admin only) --------------------------------------------------
 
 describe("GET /articles/:id/historique", () => {

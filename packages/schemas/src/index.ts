@@ -246,3 +246,59 @@ export const evenementStatutDTO = statusEventSchema.extend({
   eventKey: z.string().nullable(),
 });
 export type EvenementStatutDTO = z.infer<typeof evenementStatutDTO>;
+
+// Lab report projection (one expertise can hold several). `resultat`/`laboratoire`
+// /`urlDocument` mirror the French rapportInput vocabulary; `urlDocument` is
+// nullable because the `lab_report.document_url` column allows it.
+export const labReportDTO = z.object({
+  id: z.string(),
+  inspectionId: z.string(),
+  laboratoire: z.string(),
+  resultat: resultatLaboSchema,
+  urlDocument: z.string().nullable(),
+  createdAt: z.number().int(),
+  updatedAt: z.number().int(),
+});
+export type LabReportDTO = z.infer<typeof labReportDTO>;
+
+// --- Back-office read endpoints (liste + détail dossiers) -------------------
+
+// Query filters for GET /expertise (list of expertise dossiers).
+export const expertiseListFiltersSchema = z.object({
+  // Restrict to a single state; omitted => all EXPERTISE_STATES.
+  statut: statutExpertiseSchema.optional(),
+  // Free-text search on brand/title.
+  q: z.string().optional(),
+});
+export type ExpertiseListFilters = z.infer<typeof expertiseListFiltersSchema>;
+
+// One row of the dossier list (wireframe 1). `stateSince` is the epoch ms when
+// the article entered its current state (drives "ancienneté dans l'état").
+export const expertiseListItemDTO = z.object({
+  articleId: z.string(),
+  title: z.string(),
+  brand: z.string(),
+  price: z.number().int().nonnegative(),
+  currentState: stateSchema,
+  inspectorId: z.string().nullable(),
+  inspectorName: z.string().nullable(),
+  inspectionStatus: z.enum(INSPECTION_STATUSES).nullable(),
+  stateSince: z.number().int(),
+});
+export type ExpertiseListItem = z.infer<typeof expertiseListItemDTO>;
+
+// Aggregated dossier detail (wireframe 2): article + inspection + lab reports.
+export const expertiseDetailDTO = z.object({
+  article: articleSchema,
+  expertise: expertiseDTO.nullable(),
+  inspectorName: z.string().nullable(),
+  rapports: z.array(labReportDTO),
+});
+export type ExpertiseDetail = z.infer<typeof expertiseDetailDTO>;
+
+// Minimal expert identity for the "assign expert" selector (GET /experts).
+export const expertSummaryDTO = z.object({
+  id: z.string(),
+  name: z.string(),
+});
+export type ExpertSummary = z.infer<typeof expertSummaryDTO>;
