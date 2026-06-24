@@ -16,10 +16,10 @@ const ROLE_LABELS: Record<string, string> = {
 export function OperatorHeader({ operator }: { operator: Operator }) {
   return (
     <header className="border-b border-border bg-card">
-      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-4">
+      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-2 px-4 sm:gap-4">
         <EcrinLogo />
-        <div className="flex items-center gap-3">
-          <span className="text-sm">
+        <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+          <span className="hidden truncate text-sm md:inline">
             <span className="text-muted-foreground">Opérateur&nbsp;: </span>
             <span className="font-medium">{operator.name}</span>
           </span>

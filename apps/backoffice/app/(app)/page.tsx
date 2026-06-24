@@ -11,6 +11,8 @@ import { DossierTableSkeleton } from "@/components/dossiers/dossier-table-skelet
 
 export const dynamic = "force-dynamic";
 
+export const metadata = { title: "Dossiers — ÉCRIN Back-office" };
+
 type SearchParams = Promise<{ statut?: string; q?: string }>;
 
 export default async function DossiersPage({

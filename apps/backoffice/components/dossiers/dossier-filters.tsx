@@ -39,15 +39,15 @@ export function DossierFilters() {
       onSubmit={onSearch}
       role="search"
       aria-label="Filtrer les dossiers"
-      className="flex flex-wrap items-end gap-3"
+      className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end"
     >
-      <div className="grid gap-1.5">
+      <div className="grid gap-1.5 sm:w-52">
         <Label htmlFor="filter-statut">État</Label>
         <select
           id="filter-statut"
           value={statut}
           onChange={(e) => update({ statut: e.target.value })}
-          className="h-8 w-52 rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+          className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
         >
           <option value="">Tous les états</option>
           {EXPERTISE_STATES.map((s) => (
@@ -58,7 +58,7 @@ export function DossierFilters() {
         </select>
       </div>
 
-      <div className="grid gap-1.5">
+      <div className="grid gap-1.5 sm:w-56">
         <Label htmlFor="filter-q">Recherche</Label>
         <Input
           key={q}
@@ -67,18 +67,24 @@ export function DossierFilters() {
           type="search"
           defaultValue={q}
           placeholder="Référence ou marque"
-          className="w-56"
+          className="w-full"
         />
       </div>
 
-      <Button type="submit" variant="secondary">
-        Filtrer
-      </Button>
-      {statut || q ? (
-        <Button type="button" variant="ghost" onClick={() => router.push(pathname)}>
-          Réinitialiser
+      <div className="flex gap-2">
+        <Button type="submit" variant="secondary">
+          Filtrer
         </Button>
-      ) : null}
+        {statut || q ? (
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => router.push(pathname)}
+          >
+            Réinitialiser
+          </Button>
+        ) : null}
+      </div>
     </form>
   );
 }

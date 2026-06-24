@@ -18,7 +18,7 @@ export function EcrinLogo({ className }: { className?: string }) {
       <span className="font-heading text-base font-semibold tracking-[0.18em] text-foreground">
         ÉCRIN
       </span>
-      <span className="border-l border-border pl-2 text-xs text-muted-foreground">
+      <span className="hidden border-l border-border pl-2 text-xs text-muted-foreground sm:inline">
         Back-office
       </span>
     </Link>

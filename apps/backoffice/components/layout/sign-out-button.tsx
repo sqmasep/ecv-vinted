@@ -26,9 +26,14 @@ export function SignOutButton() {
   }
 
   return (
-    <Button variant="outline" size="sm" onClick={handleSignOut}>
+    <Button
+      variant="outline"
+      size="sm"
+      onClick={handleSignOut}
+      aria-label="Déconnexion"
+    >
       <LogOut className="size-4" aria-hidden />
-      Déconnexion
+      <span className="hidden sm:inline">Déconnexion</span>
     </Button>
   );
 }

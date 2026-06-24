@@ -17,7 +17,7 @@ export function DossierHeader({
           <p className="text-xs tracking-wide text-muted-foreground">
             {shortRef(article.id)}
           </p>
-          <h1 className="font-heading text-2xl font-semibold text-foreground">
+          <h1 className="font-heading text-xl font-semibold text-foreground sm:text-2xl">
             {article.title}
           </h1>
           <p className="text-muted-foreground">
@@ -34,7 +34,7 @@ export function DossierHeader({
           <p className="text-xs text-muted-foreground">Photos non disponibles</p>
         </div>
 
-        <div className="shrink-0 rounded-lg border border-border bg-background px-4 py-3 text-right">
+        <div className="w-full shrink-0 rounded-lg border border-border bg-background px-4 py-3 sm:w-auto sm:text-right">
           <p className="mb-1.5 text-xs tracking-wide text-muted-foreground uppercase">
             État courant
           </p>

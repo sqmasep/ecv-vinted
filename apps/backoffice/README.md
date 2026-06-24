@@ -1,36 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/create-next-app).
+# ÉCRIN — Back-office d'expertise
 
-## Getting Started
+Outil opérateur interne pour piloter le cycle de vie physique des pièces de
+luxe ÉCRIN : réception au hub → expertise → rapport(s) labo → décision
+(authentification / refus). Next.js (App Router) + Eden Treaty + Better-auth +
+Tailwind/Shadcn.
 
-First, run the development server:
+> Outil métier **sobre**, distinct de l'expérience acheteur. Le front ne décide
+> jamais d'un statut : il propose les seules transitions légales depuis l'état
+> courant et **l'API tranche** (la machine à états vit dans `apps/api`).
+
+## Démarrage
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# à la racine du monorepo
+bun install
+
+# 1. API métier (port 3001) — requise (auth + données)
+cd apps/api && bun run dev
+
+# 2. (première fois / pour réinitialiser le jeu de démo)
+cd apps/api && bun run db:seed
+
+# 3. Back-office (port 3002)
+cd apps/backoffice && bun run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Back-office : http://localhost:3002
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Comptes de démo (mot de passe `password123`)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load Inter, a custom Google Font.
+| Rôle     | E-mail                 | Accès                              |
+| -------- | ---------------------- | ---------------------------------- |
+| Expert   | `expert@ecrin.test`    | Liste, fiche, actions d'expertise  |
+| Admin    | `admin@ecrin.test`     | + journal d'audit des transitions  |
+| Acheteur | `alexandre@ecrin.test` | Refusé (« Accès refusé »)          |
 
-## Learn More
+## Variables d'environnement
 
-To learn more about Next.js, take a look at the following resources:
+| Variable               | Défaut                  | Usage                                           |
+| ---------------------- | ----------------------- | ----------------------------------------------- |
+| `API_URL`              | `http://localhost:3001` | Base de l'API (client Treaty serveur + session) |
+| `NEXT_PUBLIC_AUTH_URL` | `http://localhost:3001` | Base Better-auth côté navigateur (`@repo/auth`) |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Côté API, `CORS_ORIGINS` doit inclure l'origine du back-office
+(`http://localhost:3002`, déjà par défaut).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Rôles & contrôle d'accès
 
-## Deploy on Vercel
+- Garde de session **serveur** (`app/(app)/layout.tsx` + `lib/session.ts`) :
+  non connecté → redirection `/sign-in` ; rôle ≠ `expert`/`admin` → écran
+  « Accès refusé ».
+- La session/rôle est résolue via `GET /api/auth/get-session` (server-to-server :
+  le runtime Node de Next ne peut pas charger `@repo/db`/`@repo/auth`, qui
+  dépendent de `bun:sqlite`).
+- L'**API reste la garde finale** : 401/403 gérés ; l'audit
+  (`/articles/:id/historique`) est réservé `admin`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Écrans
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **Connexion** (`/sign-in`) — accessible, réservée expert/admin.
+2. **Liste des dossiers** (`/`) — table triée par ancienneté, filtres état +
+   recherche, badges d'état lisibles sans la couleur, lignes cliquables.
+3. **Fiche dossier** (`/dossiers/[id]`) — en-tête pièce + état courant, **actions
+   contextuelles** (seules les transitions légales), rapports labo, **journal**
+   (admin).
+4. **Saisie rapport & décision** (dans la fiche) — formulaire labo validé via les
+   schémas Zod partagés, décision valider/refuser (motif requis si refus), aperçu
+   des notifications + confirmation (garde-fou), erreurs API accessibles
+   (422/409/403).
+
+## Qualité
+
+```bash
+bun run check-types   # tsc
+bun run lint          # eslint --max-warnings 0
+bun run test          # vitest (unitaires + rendu RTL + axe)
+bun run build
+```
+
+- Accessibilité RGAA 4.1 / WCAG 2.1 AA : lien d'évitement, landmarks, focus
+  visibles, labels associés, `aria-live`, audit **axe** automatisé.
+- Type-safety de bout en bout : appels API via **Treaty** typé, schémas Zod de
+  `@repo/schemas` réutilisés (jamais redéfinis).

@@ -18,8 +18,21 @@ export default async function AppLayout({
 
   return (
     <div className="min-h-dvh bg-background">
+      {/* Lien d'évitement (RGAA) : visible uniquement au focus clavier. */}
+      <a
+        href="#contenu"
+        className="sr-only rounded-md bg-card px-3 py-2 text-sm font-medium ring-2 ring-ring focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50"
+      >
+        Aller au contenu principal
+      </a>
       <OperatorHeader operator={operator!} />
-      <main className="mx-auto max-w-6xl px-4 py-6">{children}</main>
+      <main
+        id="contenu"
+        tabIndex={-1}
+        className="mx-auto max-w-6xl px-4 py-6 outline-none"
+      >
+        {children}
+      </main>
     </div>
   );
 }

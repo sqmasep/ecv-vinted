@@ -6,12 +6,22 @@ import type { EvenementStatutDTO } from "@repo/schemas";
 import { serverApi } from "@/lib/api";
 import { getOperator } from "@/lib/session";
 import { canAudit } from "@/lib/access";
+import { shortRef } from "@/lib/format";
 import { DossierHeader } from "@/components/dossiers/dossier-header";
 import { ActionBar } from "@/components/dossiers/action-bar";
 import { RapportsList } from "@/components/dossiers/rapports-list";
 import { HistoryPanel } from "@/components/dossiers/history-panel";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  return { title: `Dossier ${shortRef(id)} — ÉCRIN Back-office` };
+}
 
 export default async function DossierPage({
   params,
