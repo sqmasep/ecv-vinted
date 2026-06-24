@@ -1,20 +1,17 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Loader2 } from "lucide-react";
-import { toast } from "sonner";
 import type { ExpertSummary } from "@repo/schemas";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { allowedActions, type ActionKind } from "@/lib/transitions";
-import {
-  receptionAction,
-  startAction,
-  type ActionResult,
-} from "@/lib/expertise-actions";
+import { receptionAction, startAction } from "@/lib/expertise-actions";
+import { useExpertiseAction } from "@/components/dossiers/use-expertise-action";
+import { RapportForm } from "@/components/dossiers/rapport-form";
+import { DecisionPanel } from "@/components/dossiers/decision-panel";
 
 function variantFor(kind: ActionKind) {
   if (kind === "reject") return "destructive" as const;
@@ -24,17 +21,20 @@ function variantFor(kind: ActionKind) {
 
 export function ActionBar({
   articleId,
+  inspectionId,
   state,
   experts,
 }: {
   articleId: string;
+  // null tant que l'inspection n'existe pas (avant la réception au hub).
+  inspectionId: string | null;
   state: string;
   experts: ExpertSummary[];
 }) {
-  const router = useRouter();
-  const [pending, startTransition] = useTransition();
+  const { pending, run } = useExpertiseAction();
   const [open, setOpen] = useState<ActionKind | null>(null);
   const actions = allowedActions(state);
+  const close = () => setOpen(null);
 
   if (actions.length === 0) {
     return (
@@ -53,42 +53,18 @@ export function ActionBar({
     );
   }
 
-  function handleResult(res: ActionResult, successMsg: string) {
-    if (res.ok) {
-      toast.success(successMsg);
-      setOpen(null);
-      router.refresh();
-    } else {
-      toast.error(res.message);
-      // 409 = l'état a changé : on recharge pour réafficher les bonnes actions.
-      if (res.status === 409) router.refresh();
-    }
-  }
-
   function onReception(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const hubId = String(
-      new FormData(e.currentTarget).get("hubId") ?? "",
-    ).trim();
-    if (!hubId) {
-      toast.error("Identifiant de hub requis.");
-      return;
-    }
-    startTransition(async () => {
-      handleResult(await receptionAction(articleId, hubId), "Réception enregistrée.");
-    });
+    const hubId = String(new FormData(e.currentTarget).get("hubId") ?? "").trim();
+    if (!hubId) return;
+    run(() => receptionAction(articleId, hubId), "Réception enregistrée.", close);
   }
 
   function onStart(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const expertId = String(new FormData(e.currentTarget).get("expertId") ?? "");
-    if (!expertId) {
-      toast.error("Sélectionnez un expert.");
-      return;
-    }
-    startTransition(async () => {
-      handleResult(await startAction(articleId, expertId), "Expertise démarrée.");
-    });
+    if (!expertId || !inspectionId) return;
+    run(() => startAction(inspectionId, expertId), "Expertise démarrée.", close);
   }
 
   return (
@@ -160,11 +136,24 @@ export function ActionBar({
         </form>
       ) : null}
 
-      {open === "rapport" || open === "validate" || open === "reject" ? (
-        <p className="pt-1 text-sm text-muted-foreground">
-          Saisie du rapport et décision : formulaire dédié à l&apos;étape
-          suivante.
-        </p>
+      {open === "rapport" && inspectionId ? (
+        <RapportForm inspectionId={inspectionId} onClose={close} />
+      ) : null}
+
+      {open === "validate" && inspectionId ? (
+        <DecisionPanel
+          inspectionId={inspectionId}
+          decision="authenticated"
+          onClose={close}
+        />
+      ) : null}
+
+      {open === "reject" && inspectionId ? (
+        <DecisionPanel
+          inspectionId={inspectionId}
+          decision="rejected"
+          onClose={close}
+        />
       ) : null}
     </section>
   );

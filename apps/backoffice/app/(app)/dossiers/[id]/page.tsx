@@ -66,6 +66,7 @@ export default async function DossierPage({
       />
       <ActionBar
         articleId={detail.article.id}
+        inspectionId={detail.expertise?.id ?? null}
         state={detail.article.currentState}
         experts={experts}
       />

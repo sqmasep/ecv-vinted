@@ -1,5 +1,7 @@
 "use server";
 
+import type { RapportInput, DecisionInput } from "@repo/schemas";
+
 import { serverApi } from "@/lib/api";
 
 // Résultat sérialisable renvoyé aux composants client. L'API reste la garde
@@ -38,12 +40,43 @@ export async function receptionAction(
   return { ok: true, newState: data.newState };
 }
 
+// NB : start / rapport / decision ciblent l'INSPECTION id (cf. service
+// requireInspection), tandis que reception cible l'ARTICLE id (l'inspection
+// n'existe pas encore). La fiche fournit l'inspection id via detail.expertise.id.
+export async function rapportAction(
+  inspectionId: string,
+  input: RapportInput,
+): Promise<ActionResult> {
+  const api = await serverApi();
+  const res = await api.expertise({ id: inspectionId }).rapport.post(input);
+  if (res.error || res.status !== 200 || !res.data) {
+    const status = res.status ?? 500;
+    return { ok: false, status, message: mapError(status, "Échec de l'enregistrement du rapport.") };
+  }
+  const data = res.data as { newState: string };
+  return { ok: true, newState: data.newState };
+}
+
+export async function decisionAction(
+  inspectionId: string,
+  input: DecisionInput,
+): Promise<ActionResult> {
+  const api = await serverApi();
+  const res = await api.expertise({ id: inspectionId }).decision.post(input);
+  if (res.error || res.status !== 200 || !res.data) {
+    const status = res.status ?? 500;
+    return { ok: false, status, message: mapError(status, "Échec de l'enregistrement de la décision.") };
+  }
+  const data = res.data as { newState: string };
+  return { ok: true, newState: data.newState };
+}
+
 export async function startAction(
-  articleId: string,
+  inspectionId: string,
   expertId: string,
 ): Promise<ActionResult> {
   const api = await serverApi();
-  const res = await api.expertise({ id: articleId }).start.post({ expertId });
+  const res = await api.expertise({ id: inspectionId }).start.post({ expertId });
   if (res.error || res.status !== 200 || !res.data) {
     const status = res.status ?? 500;
     return { ok: false, status, message: mapError(status, "Échec du démarrage.") };
