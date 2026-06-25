@@ -15,7 +15,7 @@ export function ArticleCard({ article }: { article: Article }) {
       className="group focus-visible:ring-ring/50 block rounded-xl outline-none focus-visible:ring-3"
     >
       <article className="flex h-full flex-col overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10 transition-shadow group-hover:shadow-lg">
-        <div className="relative flex aspect-square items-center justify-center bg-gradient-to-br from-neutral-100 to-neutral-200 dark:from-neutral-800 dark:to-neutral-900">
+        <div className="relative flex aspect-square items-center justify-center bg-linear-to-br from-neutral-100 to-neutral-200 dark:from-neutral-800 dark:to-neutral-900">
           <span className="font-heading text-5xl font-semibold tracking-tight text-foreground/15">
             {article.brand.slice(0, 2).toUpperCase()}
           </span>

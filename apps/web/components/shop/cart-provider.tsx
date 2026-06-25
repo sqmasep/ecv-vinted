@@ -9,6 +9,7 @@ import {
   useState,
 } from "react";
 import type { CartItem } from "@repo/schemas";
+import { addItem, cartTotals, hasItem, removeItem } from "@/lib/cart";
 
 const STORAGE_KEY = "ecrin-cart";
 
@@ -47,30 +48,27 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [items, ready]);
 
   const add = useCallback((item: CartItem) => {
-    setItems((prev) =>
-      prev.some((i) => i.articleId === item.articleId) ? prev : [...prev, item],
-    );
+    setItems((prev) => addItem(prev, item));
   }, []);
 
   const remove = useCallback((articleId: string) => {
-    setItems((prev) => prev.filter((i) => i.articleId !== articleId));
+    setItems((prev) => removeItem(prev, articleId));
   }, []);
 
   const clear = useCallback(() => setItems([]), []);
 
   const value = useMemo<CartContextValue>(() => {
-    const subtotal = items.reduce((s, i) => s + i.price, 0);
-    const fees = items.reduce((s, i) => s + i.authenticationFee, 0);
+    const { subtotal, fees, total, count } = cartTotals(items);
     return {
       items,
       add,
       remove,
       clear,
-      has: (id) => items.some((i) => i.articleId === id),
+      has: (id) => hasItem(items, id),
       subtotal,
       fees,
-      total: subtotal + fees,
-      count: items.length,
+      total,
+      count,
       ready,
     };
   }, [items, add, remove, clear, ready]);

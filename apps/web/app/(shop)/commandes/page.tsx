@@ -37,7 +37,7 @@ export default async function CommandesPage() {
                 href={`/suivi/${order.id}`}
                 className="focus-visible:ring-ring/50 flex items-center gap-4 rounded-xl bg-card p-4 ring-1 ring-foreground/10 outline-none hover:shadow-md focus-visible:ring-3"
               >
-                <div className="flex size-14 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-neutral-100 to-neutral-200 font-heading text-base font-semibold text-foreground/20 dark:from-neutral-800 dark:to-neutral-900">
+                <div className="flex size-14 shrink-0 items-center justify-center rounded-lg bg-linear-to-br from-neutral-100 to-neutral-200 font-heading text-base font-semibold text-foreground/20 dark:from-neutral-800 dark:to-neutral-900">
                   {order.article.brand.slice(0, 2).toUpperCase()}
                 </div>
                 <div className="min-w-0 flex-1">

@@ -161,11 +161,13 @@ export function PaymentForm() {
         <h2 className="font-heading text-sm font-medium">Votre commande</h2>
         <ul className="mt-3 grid gap-2 text-sm">
           {items.map((item) => (
-            <li key={item.articleId} className="flex justify-between gap-2">
-              <span className="truncate text-muted-foreground">
+            <li key={item.articleId} className="flex justify-between gap-3">
+              <span className="min-w-0 wrap-break-word text-muted-foreground">
                 {item.brand} — {item.title}
               </span>
-              <span>{formatPrice(item.price + item.authenticationFee)}</span>
+              <span className="shrink-0 tabular-nums">
+                {formatPrice(item.price + item.authenticationFee)}
+              </span>
             </li>
           ))}
         </ul>
@@ -186,7 +188,13 @@ export function PaymentForm() {
           </p>
         </div>
 
-        <Button type="submit" size="lg" className="mt-4 w-full" disabled={loading}>
+        <Button
+          type="submit"
+          size="lg"
+          variant="vinted"
+          className="mt-4 w-full"
+          disabled={loading}
+        >
           {loading && <Loader2 className="size-4 animate-spin" />}
           Payer et lancer l’authentification
         </Button>

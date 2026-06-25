@@ -3,6 +3,7 @@ import { ShieldCheck } from "lucide-react";
 
 import { CartProvider } from "@/components/shop/cart-provider";
 import { CartIndicator } from "@/components/shop/cart-indicator";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { UserMenu } from "@/components/auth/user-menu";
 
 export default function ShopLayout({
@@ -13,7 +14,7 @@ export default function ShopLayout({
   return (
     <CartProvider>
       <div className="flex min-h-svh flex-col">
-        <div className="flex items-center justify-center gap-2 bg-primary px-4 py-1.5 text-center text-xs text-primary-foreground">
+        <div className="flex items-center justify-center gap-2 bg-vinted px-4 py-1.5 text-center text-xs text-vinted-foreground">
           <ShieldCheck className="size-3.5" />
           Toutes les pièces sont authentifiées par nos experts
         </div>
@@ -33,6 +34,7 @@ export default function ShopLayout({
               </nav>
             </div>
             <div className="flex items-center gap-2">
+              <ThemeToggle />
               <CartIndicator />
               <UserMenu />
             </div>
