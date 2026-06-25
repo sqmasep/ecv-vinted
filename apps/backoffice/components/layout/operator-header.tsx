@@ -20,6 +20,7 @@ export function OperatorHeader({ operator }: { operator: Operator }) {
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-2 px-4 sm:gap-4">
         <EcrinLogo />
         <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+          <ThemeToggle />
           <span className="hidden truncate text-sm md:inline">
             <span className="text-muted-foreground">Opérateur&nbsp;: </span>
             <span className="font-medium">{operator.name}</span>
@@ -27,7 +28,6 @@ export function OperatorHeader({ operator }: { operator: Operator }) {
           <Badge variant="outline">
             {ROLE_LABELS[operator.role] ?? operator.role}
           </Badge>
-          <ThemeToggle />
           <SignOutButton />
         </div>
       </div>

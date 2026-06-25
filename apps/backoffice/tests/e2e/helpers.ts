@@ -4,9 +4,9 @@ import { expect, type Page } from "@playwright/test";
 
 // Comptes seedés (cf. apps/api/src/seed.ts). Mot de passe commun.
 export const PASSWORD = "password123";
-export const SEED_EXPERT = { email: "expert@ecrin.test", name: "Expert ÉCRIN" };
-export const SEED_ADMIN = { email: "admin@ecrin.test", name: "Admin ÉCRIN" };
-export const SEED_BUYER = { email: "alexandre@ecrin.test", name: "Alexandre" };
+export const SEED_EXPERT = { email: "lucas.phillipe@ecrin.fr", name: "Lucas Phillipe" };
+export const SEED_ADMIN = { email: "sacha.debusschere@ecrin.fr", name: "Sacha Debusschère" };
+export const SEED_BUYER = { email: "alexandre.mercier@ecrin.fr", name: "Alexandre Mercier" };
 
 // Pièce seedée à l'état "vendue" (sold_awaiting_shipment) — point d'entrée du
 // parcours d'expertise (réception au hub). Cf. DEMO dans apps/api/src/seed.ts.

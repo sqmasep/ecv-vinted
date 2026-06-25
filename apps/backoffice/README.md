@@ -29,11 +29,13 @@ Back-office : http://localhost:3002
 
 ### Comptes de démo (mot de passe `password123`)
 
-| Rôle     | E-mail                 | Accès                              |
-| -------- | ---------------------- | ---------------------------------- |
-| Expert   | `expert@ecrin.test`    | Liste, fiche, actions d'expertise  |
-| Admin    | `admin@ecrin.test`     | + journal d'audit des transitions  |
-| Acheteur | `alexandre@ecrin.test` | Refusé (« Accès refusé »)          |
+| Rôle     | E-mail                        | Accès                              |
+| -------- | ----------------------------- | ---------------------------------- |
+| Expert   | `lucas.phillipe@ecrin.fr`     | Liste, fiche, actions d'expertise  |
+| Expert   | `camille.roussel@ecrin.fr`    | Liste, fiche, actions d'expertise  |
+| Admin    | `sacha.debusschere@ecrin.fr`  | + journal d'audit des transitions  |
+| Admin    | `romain.leblond@ecrin.fr`     | + journal d'audit des transitions  |
+| Acheteur | `alexandre.mercier@ecrin.fr`  | Refusé (« Accès refusé »)          |
 
 ## Variables d'environnement
 

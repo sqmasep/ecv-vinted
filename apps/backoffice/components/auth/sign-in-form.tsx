@@ -73,7 +73,7 @@ export function SignInForm() {
               id="email"
               name="email"
               type="email"
-              placeholder="expert@ecrin.test"
+              placeholder="lucas.phillipe@ecrin.fr"
               autoComplete="email"
               required
             />

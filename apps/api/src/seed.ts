@@ -29,11 +29,33 @@ type ArticleSpec = {
 };
 
 const LISTED: ArticleSpec[] = [
+  // Maroquinerie
   { title: "Sac Kelly 28 cuir Togo noir", brand: "Hermès", price: 1450000, fee: 12000 },
+  { title: "Sac Constance 24 epsom étoupe", brand: "Hermès", price: 1250000, fee: 13000 },
   { title: "Sac Classic Flap medium caviar", brand: "Chanel", price: 720000, fee: 9000 },
-  { title: "Montre Submariner Date acier", brand: "Rolex", price: 1190000, fee: 15000 },
+  { title: "Sac 19 large tweed écru", brand: "Chanel", price: 680000, fee: 9000 },
+  { title: "Sac Boy old medium cuir veau", brand: "Chanel", price: 560000, fee: 8000 },
   { title: "Sac Speedy 25 Monogram", brand: "Louis Vuitton", price: 145000, fee: 6000 },
+  { title: "Sac Capucines MM taurillon noir", brand: "Louis Vuitton", price: 590000, fee: 8000 },
   { title: "Sac Lady Dior medium cannage", brand: "Dior", price: 480000, fee: 8000 },
+  { title: "Sac Saddle toile oblique", brand: "Dior", price: 410000, fee: 7000 },
+  { title: "Sac Jackie 1961 cuir grainé", brand: "Gucci", price: 280000, fee: 7000 },
+  { title: "Sac Jodie mini intrecciato", brand: "Bottega Veneta", price: 360000, fee: 7000 },
+  { title: "Sac Loulou medium cuir matelassé", brand: "Saint Laurent", price: 250000, fee: 6000 },
+  { title: "Sac Galleria saffiano noir", brand: "Prada", price: 320000, fee: 6000 },
+  { title: "Sac Triomphe medium cuir lisse", brand: "Céline", price: 380000, fee: 7000 },
+  { title: "Sac Saint Louis GM toile enduite", brand: "Goyard", price: 175000, fee: 6000 },
+  // Horlogerie
+  { title: "Montre Submariner Date acier", brand: "Rolex", price: 1190000, fee: 15000 },
+  { title: "Montre Daytona acier cadran blanc", brand: "Rolex", price: 3800000, fee: 30000 },
+  { title: "Montre Nautilus 5711/1A acier", brand: "Patek Philippe", price: 12500000, fee: 45000 },
+  { title: "Montre Royal Oak 41 acier", brand: "Audemars Piguet", price: 7900000, fee: 40000 },
+  { title: "Montre Speedmaster Moonwatch Professional", brand: "Omega", price: 720000, fee: 14000 },
+  { title: "Montre Santos large acier", brand: "Cartier", price: 850000, fee: 15000 },
+  // Joaillerie
+  { title: "Collier Alhambra 10 motifs or jaune", brand: "Van Cleef & Arpels", price: 1950000, fee: 22000 },
+  { title: "Bracelet Serpenti Viper or rose et diamants", brand: "Bulgari", price: 2350000, fee: 25000 },
+  { title: "Bracelet Love or jaune", brand: "Cartier", price: 780000, fee: 14000 },
 ];
 
 // Pieces dedicated to demo orders, each frozen at a different milestone.
@@ -50,6 +72,14 @@ const DEMO: { spec: ArticleSpec; target: State; rejected?: boolean }[] = [
     spec: { title: "Sac Birkin 30 supposé Togo", brand: "Hermès", price: 1600000, fee: 15000 },
     target: "authentication_in_progress",
     rejected: true,
+  },
+  {
+    spec: { title: "Sac Pochette Métis Monogram", brand: "Louis Vuitton", price: 230000, fee: 6000 },
+    target: "shipped",
+  },
+  {
+    spec: { title: "Montre Tank Must acier", brand: "Cartier", price: 320000, fee: 9000 },
+    target: "authenticated",
   },
 ];
 
@@ -125,10 +155,15 @@ async function createOrderWithTimeline(
 }
 
 async function main() {
-  const sellerId = await ensureUser("vendeur@ecrin.test", "Vendeur ÉCRIN", "seller");
-  const buyerId = await ensureUser("alexandre@ecrin.test", "Alexandre", "buyer");
-  await ensureUser("expert@ecrin.test", "Expert ÉCRIN", "expert");
-  await ensureUser("admin@ecrin.test", "Admin ÉCRIN", "admin");
+  // Équipe interne ÉCRIN — administrateurs et experts d'authentification.
+  await ensureUser("sacha.debusschere@ecrin.fr", "Sacha Debusschère", "admin");
+  await ensureUser("romain.leblond@ecrin.fr", "Romain Leblond", "admin");
+  await ensureUser("lucas.phillipe@ecrin.fr", "Lucas Phillipe", "expert");
+  await ensureUser("camille.roussel@ecrin.fr", "Camille Roussel", "expert");
+
+  // Vendeur en dépôt-vente et acheteur de démonstration.
+  const sellerId = await ensureUser("elodie.fontaine@ecrin.fr", "Élodie Fontaine", "seller");
+  const buyerId = await ensureUser("alexandre.mercier@ecrin.fr", "Alexandre Mercier", "buyer");
 
   // Clear domain data (respect FK order) for a repeatable seed.
   await db.delete(statusEvent);
@@ -145,10 +180,13 @@ async function main() {
   }
 
   console.log("✅ seed done");
-  console.log("   buyer login:  alexandre@ecrin.test /", PASSWORD);
-  console.log("   seller login: vendeur@ecrin.test /", PASSWORD);
-  console.log("   expert login: expert@ecrin.test /", PASSWORD);
-  console.log("   admin login:  admin@ecrin.test /", PASSWORD);
+  console.log(`   Comptes (mot de passe : ${PASSWORD})`);
+  console.log("   • Admin    sacha.debusschere@ecrin.fr  (Sacha Debusschère)");
+  console.log("   • Admin    romain.leblond@ecrin.fr     (Romain Leblond)");
+  console.log("   • Expert   lucas.phillipe@ecrin.fr     (Lucas Phillipe)");
+  console.log("   • Expert   camille.roussel@ecrin.fr    (Camille Roussel)");
+  console.log("   • Vendeur  elodie.fontaine@ecrin.fr    (Élodie Fontaine)");
+  console.log("   • Acheteur alexandre.mercier@ecrin.fr  (Alexandre Mercier)");
 }
 
 main().then(() => process.exit(0));

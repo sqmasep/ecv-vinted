@@ -9,8 +9,8 @@ import { formatAge, formatDateTime, shortRef } from "@/lib/format";
 export function DossierRow({ item }: { item: ExpertiseListItem }) {
   const ref = shortRef(item.articleId);
   return (
-    <tr className="relative border-b border-border transition-colors last:border-0 hover:bg-vinted/[0.06] focus-within:bg-vinted/[0.06] before:absolute before:inset-y-0 before:left-0 before:w-0.5 before:bg-vinted before:opacity-0 before:transition-opacity hover:before:opacity-100 focus-within:before:opacity-100">
-      <td className="px-4 py-3 align-top">
+    <tr className="group relative border-b border-border transition-colors last:border-0 hover:bg-vinted/[0.06] focus-within:bg-vinted/[0.06]">
+      <td className="border-l-2 border-l-transparent px-4 py-3 align-top transition-colors group-hover:border-l-vinted group-focus-within:border-l-vinted">
         <Link
           href={`/dossiers/${item.articleId}`}
           aria-label={`Ouvrir le dossier ${ref} — ${item.brand}, ${item.title}`}

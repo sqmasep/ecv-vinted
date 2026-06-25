@@ -16,8 +16,10 @@ bun db:seed     # users + articles de démo (idempotent)
 bun dev         # serveur sur http://localhost:3001
 ```
 
-Comptes seedés (mdp `password123`) : `expert@ecrin.test`, `admin@ecrin.test`,
-`alexandre@ecrin.test` (buyer), `vendeur@ecrin.test` (seller).
+Comptes seedés (mdp `password123`) : `sacha.debusschere@ecrin.fr` &
+`romain.leblond@ecrin.fr` (admins), `lucas.phillipe@ecrin.fr` &
+`camille.roussel@ecrin.fr` (experts), `alexandre.mercier@ecrin.fr` (buyer),
+`elodie.fontaine@ecrin.fr` (seller).
 
 ## Tests
 

@@ -79,11 +79,11 @@ async function main() {
 
   // --- Connexions --------------------------------------------------------
   console.log("→ Connexions");
-  const expert = await login("expert@ecrin.test");
+  const expert = await login("lucas.phillipe@ecrin.fr");
   check("login expert", Boolean(expert));
-  const admin = await login("admin@ecrin.test");
+  const admin = await login("sacha.debusschere@ecrin.fr");
   check("login admin", Boolean(admin));
-  const buyer = await login("alexandre@ecrin.test");
+  const buyer = await login("alexandre.mercier@ecrin.fr");
   check("login buyer", Boolean(buyer));
 
   const me = await api("/api/auth/get-session", { cookie: expert });
