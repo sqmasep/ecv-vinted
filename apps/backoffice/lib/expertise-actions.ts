@@ -3,28 +3,14 @@
 import type { RapportInput, DecisionInput } from "@repo/schemas";
 
 import { serverApi } from "@/lib/api";
+import { actionErrorMessage as mapError } from "@/lib/action-errors";
 
 // Résultat sérialisable renvoyé aux composants client. L'API reste la garde
 // finale : on mappe ses codes (409 état modifié, 403 rôle, 422 validation) en
-// messages FR accessibles, le client gère le rafraîchissement.
+// messages FR accessibles (cf. lib/action-errors), le client gère le refresh.
 export type ActionResult =
   | { ok: true; newState: string }
   | { ok: false; status: number; message: string };
-
-function mapError(status: number, fallback: string): string {
-  switch (status) {
-    case 409:
-      return "L'état du dossier a changé entre-temps. La page va se rafraîchir.";
-    case 403:
-      return "Action non autorisée pour votre rôle.";
-    case 422:
-      return "Données invalides : vérifiez la saisie.";
-    case 404:
-      return "Dossier introuvable.";
-    default:
-      return fallback;
-  }
-}
 
 export async function receptionAction(
   articleId: string,

@@ -15,6 +15,7 @@ const badgeVariants = cva(
         gold: "border-amber-300/60 bg-amber-50 text-amber-900 dark:bg-amber-950/40 dark:text-amber-200",
         success:
           "border-transparent bg-emerald-100 text-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-200",
+        vinted: "border-transparent bg-vinted text-vinted-foreground",
         destructive:
           "border-transparent bg-destructive/10 text-destructive",
       },

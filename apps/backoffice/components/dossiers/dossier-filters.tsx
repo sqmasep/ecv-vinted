@@ -47,7 +47,11 @@ export function DossierFilters() {
           id="filter-statut"
           value={statut}
           onChange={(e) => update({ statut: e.target.value })}
-          className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+          // Bordure teal quand un filtre d'état est actif : cue de marque Vinted
+          // partagé avec le parcours d'achat, indique l'état "actif" sans couleur seule.
+          className={`h-8 w-full rounded-lg border bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 ${
+            statut ? "border-vinted" : "border-input"
+          }`}
         >
           <option value="">Tous les états</option>
           {EXPERTISE_STATES.map((s) => (

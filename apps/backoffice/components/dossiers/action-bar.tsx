@@ -15,7 +15,9 @@ import { DecisionPanel } from "@/components/dossiers/decision-panel";
 
 function variantFor(kind: ActionKind) {
   if (kind === "reject") return "destructive" as const;
-  if (kind === "validate") return "default" as const;
+  // Validation de l'authentification = action de confiance → teal Vinted,
+  // comme les CTA clés du parcours d'achat.
+  if (kind === "validate") return "vinted" as const;
   return "secondary" as const;
 }
 

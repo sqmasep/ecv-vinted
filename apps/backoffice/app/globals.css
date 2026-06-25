@@ -5,9 +5,10 @@
 @custom-variant dark (&:is(.dark *));
 
 /* -------------------------------------------------------------------------
-   Design tokens — back-office ÉCRIN. Outil métier sobre : fond crème, texte
-   navy, accents or réservés aux éléments non textuels (focus, logo, badges).
-   Palette ÉCRIN : navy #0B1B2B · crème #F4F1EC · or #9A7B4F · gris #555555.
+   Design tokens — back-office ÉCRIN, synchronisés avec le parcours d'achat
+   (apps/web) : neutres purs, or champagne en primary (logo + focus), teal
+   Vinted comme cue de marque. Base claire par défaut, mode sombre identique
+   au web. Couleur réservée aux signaux (état, action de confiance, focus).
    ------------------------------------------------------------------------- */
 @theme inline {
     --font-heading: var(--font-sans);
@@ -44,6 +45,8 @@
     --color-foreground: var(--foreground);
     --color-background: var(--background);
     --color-gold: var(--gold);
+    --color-vinted: var(--vinted);
+    --color-vinted-foreground: var(--vinted-foreground);
     --radius-sm: calc(var(--radius) * 0.6);
     --radius-md: calc(var(--radius) * 0.8);
     --radius-lg: var(--radius);
@@ -53,75 +56,85 @@
     --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* Light mode — synchronisé avec le parcours d'achat (apps/web) : neutres purs,
+   or champagne en primary, teal Vinted en cue de marque. */
 :root {
-    --gold: #9a7b4f;
-    --background: #f4f1ec; /* crème */
-    --foreground: #0b1b2b; /* navy */
-    --card: #ffffff;
-    --card-foreground: #0b1b2b;
-    --popover: #ffffff;
-    --popover-foreground: #0b1b2b;
-    --primary: #0b1b2b; /* navy */
-    --primary-foreground: #f4f1ec; /* crème */
-    --secondary: #ece7de;
-    --secondary-foreground: #0b1b2b;
-    --muted: #ece7de;
-    --muted-foreground: #555555; /* gris — 5.3:1 sur crème */
-    --accent: #efe9df;
-    --accent-foreground: #0b1b2b;
-    --destructive: oklch(0.55 0.2 27.3);
-    --border: #dad3c7;
-    --input: #cfc7b8;
-    --ring: #9a7b4f; /* or — focus visible */
-    --chart-1: #0b1b2b;
-    --chart-2: #9a7b4f;
-    --chart-3: #555555;
-    --chart-4: #7a8a99;
-    --chart-5: #b9a78a;
-    --radius: 0.5rem;
-    --sidebar: #ffffff;
-    --sidebar-foreground: #0b1b2b;
-    --sidebar-primary: #0b1b2b;
-    --sidebar-primary-foreground: #f4f1ec;
-    --sidebar-accent: #efe9df;
-    --sidebar-accent-foreground: #0b1b2b;
-    --sidebar-border: #dad3c7;
-    --sidebar-ring: #9a7b4f;
+    --background: oklch(0.99 0 0);
+    --foreground: oklch(0.18 0 0);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.18 0 0);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.18 0 0);
+    --primary: oklch(0.55 0.085 80);
+    --primary-foreground: oklch(0.99 0 0);
+    /* Or champagne — réservé au logo (cf. ecrin-logo), aligné sur le primary web. */
+    --gold: oklch(0.55 0.085 80);
+    /* Teal Vinted — cue de marque partagé avec le parcours d'achat (apps/web). */
+    --vinted: oklch(0.52 0.085 195);
+    --vinted-foreground: oklch(0.99 0 0);
+    --secondary: oklch(0.96 0 0);
+    --secondary-foreground: oklch(0.22 0 0);
+    --muted: oklch(0.96 0 0);
+    --muted-foreground: oklch(0.5 0 0);
+    --accent: oklch(0.96 0 0);
+    --accent-foreground: oklch(0.22 0 0);
+    --destructive: oklch(0.58 0.215 27);
+    --border: oklch(0.9 0 0);
+    --input: oklch(0.9 0 0);
+    --ring: oklch(0.55 0.085 80);
+    --chart-1: oklch(0.7 0.11 85);
+    --chart-2: oklch(0.55 0.06 200);
+    --chart-3: oklch(0.45 0 0);
+    --chart-4: oklch(0.65 0.09 85);
+    --chart-5: oklch(0.4 0 0);
+    --radius: 0.25rem;
+    --sidebar: oklch(0.97 0 0);
+    --sidebar-foreground: oklch(0.18 0 0);
+    --sidebar-primary: oklch(0.55 0.085 80);
+    --sidebar-primary-foreground: oklch(0.99 0 0);
+    --sidebar-accent: oklch(0.96 0 0);
+    --sidebar-accent-foreground: oklch(0.22 0 0);
+    --sidebar-border: oklch(0.9 0 0);
+    --sidebar-ring: oklch(0.55 0.085 80);
 }
 
+/* Dark mode — strictement identique au parcours d'achat : neutral near-black,
+   or champagne lumineux, teal Vinted plus clair sur la base sombre. */
 .dark {
-    --gold: #c2a878;
-    --background: #0b1b2b; /* navy */
-    --foreground: #f4f1ec; /* crème */
-    --card: #10263a;
-    --card-foreground: #f4f1ec;
-    --popover: #10263a;
-    --popover-foreground: #f4f1ec;
-    --primary: #f4f1ec;
-    --primary-foreground: #0b1b2b;
-    --secondary: #17324a;
-    --secondary-foreground: #f4f1ec;
-    --muted: #17324a;
-    --muted-foreground: #b6c0c9;
-    --accent: #17324a;
-    --accent-foreground: #f4f1ec;
-    --destructive: oklch(0.704 0.191 22.216);
+    --background: oklch(0.165 0 0);
+    --foreground: oklch(0.95 0 0);
+    --card: oklch(0.205 0 0);
+    --card-foreground: oklch(0.95 0 0);
+    --popover: oklch(0.205 0 0);
+    --popover-foreground: oklch(0.95 0 0);
+    --primary: oklch(0.83 0.115 86);
+    --primary-foreground: oklch(0.22 0.03 80);
+    --gold: oklch(0.83 0.115 86);
+    --vinted: oklch(0.64 0.1 195);
+    --vinted-foreground: oklch(0.16 0.02 195);
+    --secondary: oklch(0.27 0 0);
+    --secondary-foreground: oklch(0.95 0 0);
+    --muted: oklch(0.25 0 0);
+    --muted-foreground: oklch(0.72 0 0);
+    --accent: oklch(0.3 0 0);
+    --accent-foreground: oklch(0.93 0 0);
+    --destructive: oklch(0.68 0.185 25);
     --border: oklch(1 0 0 / 12%);
     --input: oklch(1 0 0 / 16%);
-    --ring: #c2a878;
-    --chart-1: #f4f1ec;
-    --chart-2: #c2a878;
-    --chart-3: #b6c0c9;
-    --chart-4: #7a8a99;
-    --chart-5: #55708a;
-    --sidebar: #10263a;
-    --sidebar-foreground: #f4f1ec;
-    --sidebar-primary: #c2a878;
-    --sidebar-primary-foreground: #0b1b2b;
-    --sidebar-accent: #17324a;
-    --sidebar-accent-foreground: #f4f1ec;
+    --ring: oklch(0.83 0.115 86);
+    --chart-1: oklch(0.83 0.115 86);
+    --chart-2: oklch(0.65 0.07 200);
+    --chart-3: oklch(0.7 0 0);
+    --chart-4: oklch(0.55 0.06 85);
+    --chart-5: oklch(0.45 0 0);
+    --sidebar: oklch(0.185 0 0);
+    --sidebar-foreground: oklch(0.95 0 0);
+    --sidebar-primary: oklch(0.83 0.115 86);
+    --sidebar-primary-foreground: oklch(0.22 0.03 80);
+    --sidebar-accent: oklch(0.3 0 0);
+    --sidebar-accent-foreground: oklch(0.93 0 0);
     --sidebar-border: oklch(1 0 0 / 12%);
-    --sidebar-ring: #c2a878;
+    --sidebar-ring: oklch(0.83 0.115 86);
 }
 
 @layer base {

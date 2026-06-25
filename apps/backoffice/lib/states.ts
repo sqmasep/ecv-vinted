@@ -21,6 +21,7 @@ export type StateVariant =
   | "outline"
   | "gold"
   | "success"
+  | "vinted"
   | "destructive";
 
 export type StateMeta = {
@@ -36,7 +37,7 @@ export const STATE_META: Record<string, StateMeta> = {
   received_at_hub: { label: "Reçue au hub", icon: PackageCheck, variant: "secondary" },
   authentication_in_progress: { label: "Expertise en cours", icon: Search, variant: "gold" },
   lab_analysis: { label: "Analyse labo", icon: FlaskConical, variant: "gold" },
-  authenticated: { label: "Authentifiée", icon: ShieldCheck, variant: "success" },
+  authenticated: { label: "Authentifiée", icon: ShieldCheck, variant: "vinted" },
   shipped: { label: "Expédiée", icon: Truck, variant: "default" },
   delivered: { label: "Livrée", icon: CheckCircle2, variant: "success" },
   rejected: { label: "Refusée", icon: XCircle, variant: "destructive" },
