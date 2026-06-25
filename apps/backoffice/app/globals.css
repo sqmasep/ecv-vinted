@@ -1,1 +1,137 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* -------------------------------------------------------------------------
+   Design tokens — back-office ÉCRIN. Outil métier sobre : fond crème, texte
+   navy, accents or réservés aux éléments non textuels (focus, logo, badges).
+   Palette ÉCRIN : navy #0B1B2B · crème #F4F1EC · or #9A7B4F · gris #555555.
+   ------------------------------------------------------------------------- */
+@theme inline {
+    --font-heading: var(--font-sans);
+    --font-sans: var(--font-sans);
+    --color-sidebar-ring: var(--sidebar-ring);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar: var(--sidebar);
+    --color-chart-5: var(--chart-5);
+    --color-chart-4: var(--chart-4);
+    --color-chart-3: var(--chart-3);
+    --color-chart-2: var(--chart-2);
+    --color-chart-1: var(--chart-1);
+    --color-ring: var(--ring);
+    --color-input: var(--input);
+    --color-border: var(--border);
+    --color-destructive: var(--destructive);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-accent: var(--accent);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-muted: var(--muted);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-secondary: var(--secondary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-primary: var(--primary);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-popover: var(--popover);
+    --color-card-foreground: var(--card-foreground);
+    --color-card: var(--card);
+    --color-foreground: var(--foreground);
+    --color-background: var(--background);
+    --color-gold: var(--gold);
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.8);
+    --radius-3xl: calc(var(--radius) * 2.2);
+    --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+    --gold: #9a7b4f;
+    --background: #f4f1ec; /* crème */
+    --foreground: #0b1b2b; /* navy */
+    --card: #ffffff;
+    --card-foreground: #0b1b2b;
+    --popover: #ffffff;
+    --popover-foreground: #0b1b2b;
+    --primary: #0b1b2b; /* navy */
+    --primary-foreground: #f4f1ec; /* crème */
+    --secondary: #ece7de;
+    --secondary-foreground: #0b1b2b;
+    --muted: #ece7de;
+    --muted-foreground: #555555; /* gris — 5.3:1 sur crème */
+    --accent: #efe9df;
+    --accent-foreground: #0b1b2b;
+    --destructive: oklch(0.55 0.2 27.3);
+    --border: #dad3c7;
+    --input: #cfc7b8;
+    --ring: #9a7b4f; /* or — focus visible */
+    --chart-1: #0b1b2b;
+    --chart-2: #9a7b4f;
+    --chart-3: #555555;
+    --chart-4: #7a8a99;
+    --chart-5: #b9a78a;
+    --radius: 0.5rem;
+    --sidebar: #ffffff;
+    --sidebar-foreground: #0b1b2b;
+    --sidebar-primary: #0b1b2b;
+    --sidebar-primary-foreground: #f4f1ec;
+    --sidebar-accent: #efe9df;
+    --sidebar-accent-foreground: #0b1b2b;
+    --sidebar-border: #dad3c7;
+    --sidebar-ring: #9a7b4f;
+}
+
+.dark {
+    --gold: #c2a878;
+    --background: #0b1b2b; /* navy */
+    --foreground: #f4f1ec; /* crème */
+    --card: #10263a;
+    --card-foreground: #f4f1ec;
+    --popover: #10263a;
+    --popover-foreground: #f4f1ec;
+    --primary: #f4f1ec;
+    --primary-foreground: #0b1b2b;
+    --secondary: #17324a;
+    --secondary-foreground: #f4f1ec;
+    --muted: #17324a;
+    --muted-foreground: #b6c0c9;
+    --accent: #17324a;
+    --accent-foreground: #f4f1ec;
+    --destructive: oklch(0.704 0.191 22.216);
+    --border: oklch(1 0 0 / 12%);
+    --input: oklch(1 0 0 / 16%);
+    --ring: #c2a878;
+    --chart-1: #f4f1ec;
+    --chart-2: #c2a878;
+    --chart-3: #b6c0c9;
+    --chart-4: #7a8a99;
+    --chart-5: #55708a;
+    --sidebar: #10263a;
+    --sidebar-foreground: #f4f1ec;
+    --sidebar-primary: #c2a878;
+    --sidebar-primary-foreground: #0b1b2b;
+    --sidebar-accent: #17324a;
+    --sidebar-accent-foreground: #f4f1ec;
+    --sidebar-border: oklch(1 0 0 / 12%);
+    --sidebar-ring: #c2a878;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    }
+  body {
+    @apply bg-background text-foreground;
+    }
+  html {
+    @apply font-sans;
+    }
+}

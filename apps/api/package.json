@@ -6,7 +6,9 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest run && bun test ./src/domain/expertise/*.itest.ts",
+    "test:unit": "vitest run",
+    "test:integration": "bun test ./src/domain/expertise/*.itest.ts",
     "dev": "bun run --watch src/index.ts",
     "db:seed": "bun run src/seed.ts",
     "check-types": "tsc --noEmit"
@@ -22,6 +24,7 @@
   "devDependencies": {
     "@repo/typescript-config": "*",
     "bun-types": "latest",
-    "typescript": "5.9.2"
+    "typescript": "5.9.2",
+    "vitest": "^3.2.4"
   }
 }
