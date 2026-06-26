@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 
 import { serverApi } from "@/lib/api";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@repo/ui/badge";
 import { formatPrice, formatDateTime } from "@/lib/format";
 import { STATE_LABELS, ESCROW_LABELS, isRejected } from "@/lib/states";
 

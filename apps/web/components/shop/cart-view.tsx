@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { ShieldCheck, Trash2, ArrowRight } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+import { Button } from "@repo/ui/button";
+import { Separator } from "@repo/ui/separator";
 import { formatPrice } from "@/lib/format";
 import { useCart } from "./cart-provider";
 

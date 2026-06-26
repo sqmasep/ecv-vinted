@@ -2,6 +2,9 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* Scan the shared UI package so its Tailwind classes are generated. */
+@source "../../../packages/ui/src";
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -58,6 +61,9 @@
 
 /* Light mode — neutral paper. */
 :root {
+    /* Aligne les contrôles natifs (liste déroulante des <select>, scrollbars)
+       sur le thème → lisibilité en clair comme en sombre. */
+    color-scheme: light;
     --background: oklch(0.99 0 0);
     --foreground: oklch(0.18 0 0);
     --card: oklch(1 0 0);
@@ -98,6 +104,7 @@
 
 /* Dark mode — défaut. Neutral near-black, or champagne lumineux. */
 .dark {
+    color-scheme: dark;
     --background: oklch(0.165 0 0);
     --foreground: oklch(0.95 0 0);
     --card: oklch(0.205 0 0);

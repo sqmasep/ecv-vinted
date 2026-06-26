@@ -3,8 +3,8 @@ import Link from "next/link";
 import { ChevronLeft, ShieldCheck } from "lucide-react";
 
 import { publicApi } from "@/lib/api";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
+import { Badge } from "@repo/ui/badge";
+import { Separator } from "@repo/ui/separator";
 import { AddToCartButton } from "@/components/shop/add-to-cart-button";
 import { AuthExplainer } from "@/components/shop/auth-explainer";
 import { formatPrice } from "@/lib/format";

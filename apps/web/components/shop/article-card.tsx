@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ShieldCheck } from "lucide-react";
 import type { Article } from "@repo/schemas";
 
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@repo/ui/badge";
 import { formatPrice } from "@/lib/format";
 import { cn } from "@/lib/utils";
 

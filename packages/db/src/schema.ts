@@ -7,6 +7,7 @@ import {
   ESCROW_STATUSES,
   INSPECTION_STATUSES,
   INSPECTION_DECISIONS,
+  EVENT_SOURCES,
   ROLES,
 } from "@repo/schemas";
 
@@ -179,13 +180,17 @@ export const inspection = sqliteTable(
       .notNull()
       .unique()
       .references(() => article.id, { onDelete: "cascade" }),
-    inspectorId: text("inspector_id")
-      .notNull()
-      .references(() => user.id, { onDelete: "restrict" }),
+    // Nullable: the inspection is opened at hub reception, before an expert is
+    // assigned (assignment happens on START_EXPERTISE).
+    inspectorId: text("inspector_id").references(() => user.id, {
+      onDelete: "restrict",
+    }),
     status: text("status", { enum: INSPECTION_STATUSES })
       .default("pending")
       .notNull(),
     decision: text("decision", { enum: INSPECTION_DECISIONS }),
+    // Mandatory motive when decision = rejected (state-machine guard).
+    rejectionReason: text("rejection_reason"),
     createdAt: integer("created_at", { mode: "timestamp_ms" })
       .default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`)
       .notNull(),
@@ -234,16 +239,30 @@ export const statusEvent = sqliteTable(
     }),
     previousState: text("previous_state", { enum: STATES }),
     newState: text("new_state", { enum: STATES }).notNull(),
+    // Who/what triggered the transition (back brick audit trail).
+    actorId: text("actor_id").references(() => user.id, {
+      onDelete: "set null",
+    }),
+    source: text("source", { enum: EVENT_SOURCES })
+      .default("systeme")
+      .notNull(),
     occurredAt: integer("occurred_at", { mode: "timestamp_ms" })
       .default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`)
       .notNull(),
+    // Kept as a boolean for the existing buyer timeline; the actual message
+    // body (acheteur/vendeur) is stored in `notificationMessage`.
     notificationSent: integer("notification_sent", { mode: "boolean" })
       .default(false)
       .notNull(),
+    notificationMessage: text("notification_message"),
+    // Idempotency key for replayed external events (lab webhooks, étape 4).
+    // Unique so a re-delivered event cannot re-apply the same transition.
+    eventKey: text("event_key").unique(),
   },
   (table) => [
     index("statusEvent_articleId_idx").on(table.articleId),
     index("statusEvent_orderId_idx").on(table.orderId),
+    index("statusEvent_actorId_idx").on(table.actorId),
   ],
 );
 
@@ -322,5 +341,9 @@ export const statusEventRelations = relations(statusEvent, ({ one }) => ({
   order: one(order, {
     fields: [statusEvent.orderId],
     references: [order.id],
+  }),
+  actor: one(user, {
+    fields: [statusEvent.actorId],
+    references: [user.id],
   }),
 }));

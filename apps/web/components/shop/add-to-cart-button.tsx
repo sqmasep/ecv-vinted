@@ -5,7 +5,7 @@ import { ShoppingBag, Check } from "lucide-react";
 import { toast } from "sonner";
 import type { Article } from "@repo/schemas";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@repo/ui/button";
 import { useCart } from "./cart-provider";
 
 export function AddToCartButton({ article }: { article: Article }) {

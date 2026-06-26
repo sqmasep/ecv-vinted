@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ShieldCheck } from "lucide-react";
 
+import { VintedByline } from "@repo/ui/vinted-byline";
 import { CartProvider } from "@/components/shop/cart-provider";
 import { CartIndicator } from "@/components/shop/cart-indicator";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -21,8 +22,13 @@ export default function ShopLayout({
         <header className="sticky top-0 z-10 border-b bg-background/80 backdrop-blur">
           <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
             <div className="flex items-baseline gap-6">
-              <Link href="/articles" className="font-heading text-lg font-semibold tracking-tight">
-                ÉCRIN
+              <Link
+                href="/articles"
+                aria-label="ÉCRIN by Vinted — Boutique"
+                className="inline-flex items-center gap-1.5 text-lg tracking-tight"
+              >
+                <span className="font-heading font-semibold">ÉCRIN</span>
+                <VintedByline />
               </Link>
               <nav className="hidden gap-4 text-sm sm:flex">
                 <Link href="/articles" className="text-muted-foreground hover:text-foreground">

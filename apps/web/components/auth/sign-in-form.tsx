@@ -7,9 +7,9 @@ import { signIn } from "@repo/auth/client";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "@repo/ui/button";
+import { Input } from "@repo/ui/input";
+import { Label } from "@repo/ui/label";
 import {
   Card,
   CardContent,
@@ -17,7 +17,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@repo/ui/card";
 
 export function SignInForm() {
   const router = useRouter();
@@ -38,7 +38,7 @@ export function SignInForm() {
           toast.error(ctx.error.message);
         },
         onSuccess: () => {
-          toast.success("Welcome back");
+          toast.success("Bon retour parmi nous");
           router.push("/");
           router.refresh();
         },
@@ -49,15 +49,15 @@ export function SignInForm() {
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
-        <CardTitle className="text-2xl">Sign in</CardTitle>
+        <CardTitle className="text-2xl">Connexion</CardTitle>
         <CardDescription>
-          Enter your email and password to continue.
+          Saisissez votre e-mail et votre mot de passe pour continuer.
         </CardDescription>
       </CardHeader>
       <form onSubmit={onSubmit}>
         <CardContent className="grid gap-4">
           <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">Adresse e-mail</Label>
             <Input
               id="email"
               name="email"
@@ -68,7 +68,7 @@ export function SignInForm() {
             />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">Mot de passe</Label>
             <Input
               id="password"
               name="password"
@@ -81,12 +81,12 @@ export function SignInForm() {
         <CardFooter className="mt-6 flex flex-col gap-4">
           <Button type="submit" className="w-full" disabled={loading}>
             {loading && <Loader2 className="size-4 animate-spin" />}
-            Sign in
+            Se connecter
           </Button>
           <p className="text-muted-foreground text-center text-sm">
-            No account yet?{" "}
+            Pas encore de compte ?{" "}
             <Link href="/sign-up" className="text-foreground underline">
-              Sign up
+              Créer un compte
             </Link>
           </p>
         </CardFooter>

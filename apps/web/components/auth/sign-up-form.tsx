@@ -7,9 +7,9 @@ import { signUp } from "@repo/auth/client";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "@repo/ui/button";
+import { Input } from "@repo/ui/input";
+import { Label } from "@repo/ui/label";
 import {
   Card,
   CardContent,
@@ -17,7 +17,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@repo/ui/card";
 
 export function SignUpForm() {
   const router = useRouter();
@@ -32,7 +32,7 @@ export function SignUpForm() {
     const confirm = String(form.get("confirm") ?? "");
 
     if (password !== confirm) {
-      toast.error("Passwords do not match");
+      toast.error("Les mots de passe ne correspondent pas");
       return;
     }
 
@@ -45,7 +45,7 @@ export function SignUpForm() {
           toast.error(ctx.error.message);
         },
         onSuccess: () => {
-          toast.success("Account created");
+          toast.success("Compte créé");
           router.push("/");
           router.refresh();
         },
@@ -56,19 +56,19 @@ export function SignUpForm() {
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
-        <CardTitle className="text-2xl">Create an account</CardTitle>
+        <CardTitle className="text-2xl">Créer un compte</CardTitle>
         <CardDescription>
-          Enter your details to get started.
+          Renseignez vos informations pour commencer.
         </CardDescription>
       </CardHeader>
       <form onSubmit={onSubmit}>
         <CardContent className="grid gap-4">
           <div className="grid gap-2">
-            <Label htmlFor="name">Name</Label>
-            <Input id="name" name="name" placeholder="Jane Doe" required />
+            <Label htmlFor="name">Nom</Label>
+            <Input id="name" name="name" placeholder="Marie Dupont" required />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">Adresse e-mail</Label>
             <Input
               id="email"
               name="email"
@@ -79,7 +79,7 @@ export function SignUpForm() {
             />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">Mot de passe</Label>
             <Input
               id="password"
               name="password"
@@ -90,7 +90,7 @@ export function SignUpForm() {
             />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="confirm">Confirm password</Label>
+            <Label htmlFor="confirm">Confirmer le mot de passe</Label>
             <Input
               id="confirm"
               name="confirm"
@@ -104,12 +104,12 @@ export function SignUpForm() {
         <CardFooter className="mt-6 flex flex-col gap-4">
           <Button type="submit" className="w-full" disabled={loading}>
             {loading && <Loader2 className="size-4 animate-spin" />}
-            Sign up
+            Créer mon compte
           </Button>
           <p className="text-muted-foreground text-center text-sm">
-            Already have an account?{" "}
+            Vous avez déjà un compte ?{" "}
             <Link href="/sign-in" className="text-foreground underline">
-              Sign in
+              Se connecter
             </Link>
           </p>
         </CardFooter>
