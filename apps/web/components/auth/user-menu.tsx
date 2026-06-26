@@ -6,7 +6,7 @@ import { signOut, useSession } from "@repo/auth/client";
 import { Loader2, LogOut } from "lucide-react";
 import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@repo/ui/button";
 
 export function UserMenu() {
   const router = useRouter();
@@ -20,10 +20,10 @@ export function UserMenu() {
     return (
       <div className="flex items-center gap-2">
         <Button asChild variant="ghost" size="sm">
-          <Link href="/sign-in">Sign in</Link>
+          <Link href="/sign-in">Se connecter</Link>
         </Button>
         <Button asChild size="sm">
-          <Link href="/sign-up">Sign up</Link>
+          <Link href="/sign-up">Créer un compte</Link>
         </Button>
       </div>
     );
@@ -33,7 +33,7 @@ export function UserMenu() {
     await signOut({
       fetchOptions: {
         onSuccess: () => {
-          toast.success("Signed out");
+          toast.success("Déconnexion réussie");
           router.push("/sign-in");
           router.refresh();
         },

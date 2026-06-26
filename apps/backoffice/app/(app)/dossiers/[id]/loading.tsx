@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@repo/ui/skeleton";
 
 // État de chargement de la fiche (loading.tsx du segment).
 export default function Loading() {

@@ -6,10 +6,10 @@ import { useSession } from "@repo/auth/client";
 import { Loader2, Lock, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
+import { Button } from "@repo/ui/button";
+import { Input } from "@repo/ui/input";
+import { Label } from "@repo/ui/label";
+import { Separator } from "@repo/ui/separator";
 import { formatPrice } from "@/lib/format";
 import { useCart } from "./cart-provider";
 

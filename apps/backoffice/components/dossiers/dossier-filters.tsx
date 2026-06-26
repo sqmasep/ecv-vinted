@@ -3,9 +3,9 @@
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { EXPERTISE_STATES } from "@repo/schemas";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "@repo/ui/button";
+import { Input } from "@repo/ui/input";
+import { Label } from "@repo/ui/label";
 import { stateMeta } from "@/lib/states";
 
 // Filtres pilotés par l'URL (searchParams) → l'état est partageable/rechargeable

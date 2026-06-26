@@ -4,9 +4,9 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import type { ExpertSummary } from "@repo/schemas";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "@repo/ui/button";
+import { Input } from "@repo/ui/input";
+import { Label } from "@repo/ui/label";
 import { allowedActions, type ActionKind } from "@/lib/transitions";
 import { receptionAction, startAction } from "@/lib/expertise-actions";
 import { useExpertiseAction } from "@/components/dossiers/use-expertise-action";

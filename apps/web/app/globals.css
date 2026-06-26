@@ -2,6 +2,9 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* Scan the shared UI package so its Tailwind classes are generated. */
+@source "../../../packages/ui/src";
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

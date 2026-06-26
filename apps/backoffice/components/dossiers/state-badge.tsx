@@ -1,4 +1,4 @@
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@repo/ui/badge";
 import { stateMeta } from "@/lib/states";
 
 // Badge d'état lisible sans la couleur : icône (forme) + libellé (texte).

@@ -4,9 +4,9 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { rapportInputSchema, LAB_RESULTS } from "@repo/schemas";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "@repo/ui/button";
+import { Input } from "@repo/ui/input";
+import { Label } from "@repo/ui/label";
 import { rapportAction } from "@/lib/expertise-actions";
 import { useExpertiseAction } from "@/components/dossiers/use-expertise-action";
 import { failedFields } from "@/lib/zod";

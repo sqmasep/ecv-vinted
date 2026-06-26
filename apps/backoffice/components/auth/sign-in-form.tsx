@@ -6,9 +6,9 @@ import { signIn } from "@repo/auth/client";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "@repo/ui/button";
+import { Input } from "@repo/ui/input";
+import { Label } from "@repo/ui/label";
 import {
   Card,
   CardContent,
@@ -16,7 +16,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@repo/ui/card";
 
 export function SignInForm() {
   const router = useRouter();

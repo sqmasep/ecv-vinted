@@ -7,7 +7,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@repo/ui/card";
 import type { Operator } from "@/lib/access";
 
 // Affiché quand un utilisateur authentifié mais sans rôle expert/admin atteint

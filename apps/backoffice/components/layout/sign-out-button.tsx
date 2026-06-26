@@ -5,7 +5,7 @@ import { signOut } from "@repo/auth/client";
 import { LogOut } from "lucide-react";
 import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@repo/ui/button";
 
 export function SignOutButton() {
   const router = useRouter();

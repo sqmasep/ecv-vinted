@@ -4,8 +4,8 @@ import { useState } from "react";
 import { AlertTriangle, Loader2 } from "lucide-react";
 import { decisionInputSchema } from "@repo/schemas";
 
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
+import { Button } from "@repo/ui/button";
+import { Label } from "@repo/ui/label";
 import { decisionAction } from "@/lib/expertise-actions";
 import { useExpertiseAction } from "@/components/dossiers/use-expertise-action";
 import {

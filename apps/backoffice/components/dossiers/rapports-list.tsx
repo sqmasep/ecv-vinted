@@ -1,6 +1,6 @@
 import type { LabReportDTO } from "@repo/schemas";
 
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@repo/ui/badge";
 import { formatDateTime } from "@/lib/format";
 
 const RESULT_LABELS: Record<string, string> = {

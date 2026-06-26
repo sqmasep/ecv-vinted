@@ -1,4 +1,4 @@
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@repo/ui/badge";
 import { EcrinLogo } from "@/components/brand/ecrin-logo";
 import { SignOutButton } from "@/components/layout/sign-out-button";
 import { ThemeToggle } from "@/components/theme-toggle";
