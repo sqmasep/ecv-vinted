@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, ShieldCheck } from "lucide-react";
 
 import { Button } from "@repo/ui/button";
+import { VintedByline } from "@repo/ui/vinted-byline";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { UserMenu } from "@/components/auth/user-menu";
 
@@ -9,7 +10,10 @@ export default function Home() {
   return (
     <div className="flex min-h-svh flex-col">
       <header className="flex items-center justify-between border-b px-6 py-4">
-        <span className="font-heading text-lg font-semibold">ÉCRIN</span>
+        <span className="inline-flex items-center gap-1.5 text-lg">
+          <span className="font-heading font-semibold">ÉCRIN</span>
+          <VintedByline />
+        </span>
         <div className="flex items-center gap-2">
           <ThemeToggle />
           <UserMenu />

@@ -14,7 +14,7 @@
 // ===========================================================================
 
 import { Elysia } from "elysia";
-import { and, asc, eq, inArray, like, or } from "@repo/db";
+import { and, asc, eq, inArray, isNull, like, or } from "@repo/db";
 import {
   article,
   inspection,
@@ -276,6 +276,17 @@ export function createExpertiseRoutes(deps: ExpertiseRouteDeps) {
             const needle = `%${query.q}%`;
             conditions.push(
               or(like(article.brand, needle), like(article.title, needle))!,
+            );
+          }
+          // Cloisonnement par expert : un expert ne voit que SES dossiers
+          // assignés + le pool encore non assigné (à prendre en charge), jamais
+          // ceux attribués à un autre expert. L'admin (superuser) voit tout.
+          if (user.role === "expert") {
+            conditions.push(
+              or(
+                isNull(inspection.inspectorId),
+                eq(inspection.inspectorId, user.id),
+              )!,
             );
           }
 

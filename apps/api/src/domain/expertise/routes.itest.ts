@@ -195,6 +195,35 @@ describe("GET /expertise (dossier list)", () => {
     expect(row.currentState).toBe("authentication_in_progress");
   });
 
+  it("hides dossiers assigned to another expert (only mine + free pool)", async () => {
+    // Un second expert récupère le dossier Hermès.
+    db.insert(schema.user)
+      .values({
+        id: "u_expert_2",
+        name: "Autre Expert",
+        email: "expert2@test",
+        role: "expert",
+      })
+      .run();
+    await post(`/expertise/${fx.articleId}/reception`, { hubId: "hub-1" });
+    await post(`/expertise/${inspectionId()}/start`, {
+      expertId: "u_expert_2",
+    });
+
+    // currentUser = EXPERT (u_expert) : le dossier d'un autre expert disparaît.
+    const mine = await (await get(`/expertise`)).json();
+    expect(
+      mine.find((x: { articleId: string }) => x.articleId === fx.articleId),
+    ).toBeUndefined();
+
+    // L'admin, lui, voit tout.
+    currentUser = ADMIN;
+    const all = await (await get(`/expertise`)).json();
+    expect(
+      all.find((x: { articleId: string }) => x.articleId === fx.articleId),
+    ).toBeDefined();
+  });
+
   it("filters by statut", async () => {
     const empty = await get(`/expertise?statut=authenticated`);
     expect((await empty.json()).length).toBe(0);
